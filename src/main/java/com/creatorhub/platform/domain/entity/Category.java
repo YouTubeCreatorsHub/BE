@@ -25,4 +25,9 @@ public class Category {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    public Category updateName(String newName){
+        this.name = newName;
+        return this;
+    }
 }

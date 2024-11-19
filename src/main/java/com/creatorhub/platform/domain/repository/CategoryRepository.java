@@ -1,9 +1,9 @@
 package com.creatorhub.platform.domain.repository;
 
-import com.creatorhub.platform.domain.entity.BoardCategory;
+import com.creatorhub.platform.domain.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BoardCategoryRepository extends JpaRepository<BoardCategory, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long> {
 }
