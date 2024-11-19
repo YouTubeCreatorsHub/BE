@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -23,10 +23,11 @@ public class Board {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "likes")
-    private Long likes;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @OneToMany
-    @JoinColumn(name = "board_id")
-    private List<BoardCategory> categories;
+    public Board rename(String newName) {
+        this.name = newName;
+        return this;
+    }
 }

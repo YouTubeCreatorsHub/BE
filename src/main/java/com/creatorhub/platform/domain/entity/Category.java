@@ -6,21 +6,23 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "board_categories")
-public class BoardCategory {
+@Table(name = "category")
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "board_id")
-    private Long boardId;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "category")
-    private String category;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

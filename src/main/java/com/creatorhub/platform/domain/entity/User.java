@@ -1,6 +1,8 @@
 package com.creatorhub.platform.domain.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,21 +13,18 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "comment")
-public class Comment {
+@AllArgsConstructor
+public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "username")
+    private String username;
 
-    @ManyToOne
-    @JoinColumn(name = "article_id")
-    private Article article;
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
