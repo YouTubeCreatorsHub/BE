@@ -37,23 +37,30 @@ public class Article {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name ="modified_at")
+    private LocalDateTime modifiedAt;
+
     public Article updateTitle(String newTitle) {
         this.title = newTitle;
+        this.modifiedAt = LocalDateTime.now();
         return this;
     }
 
     public Article updateContent(String newContent) {
         this.content = newContent;
+        this.modifiedAt = LocalDateTime.now();
         return this;
     }
 
     public Article updateCategory(Category newCategory) {
         this.category = newCategory;
+        this.modifiedAt = LocalDateTime.now();
         return this;
     }
 
     public Article updateBoard(Board newBoard) {
         this.board = newBoard;
+        this.modifiedAt = LocalDateTime.now();
         return this;
     }
 }

@@ -27,6 +27,19 @@ public class Comment {
     @JoinColumn(name = "article_id")
     private Article article;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name ="modified_at")
+    private LocalDateTime modifiedAt;
+
+    public Comment updateContent(String newContent) {
+        this.content = newContent;
+        this.modifiedAt = LocalDateTime.now();
+        return this;
+    }
 }
