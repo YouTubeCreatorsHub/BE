@@ -1,0 +1,99 @@
+name: Project Board Automation
+
+on:
+  issues:
+    types: [opened, reopened, closed]    # 이슈가 열리거나, 다시 열리거나, 닫힐 때
+  pull_request:
+    types: [opened, reopened, closed]    # PR이 열리거나, 다시 열리거나, 닫힐 때
+
+jobs:
+  project_automation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.PROJECT_TOKEN }}
+          script: |
+            const PROJECT = {
+              ID: '${{ secrets.PROJECT_ID }}',
+              COLUMNS: {
+                BACKLOG: '17052d30',        // 📋 아직 스프린트에 할당되지 않은 전체 작업
+                SPRINT_BACKLOG: '2b4b3335',  // 📅 현재 스프린트에서 진행할 작업들
+                IN_PROGRESS: 'dc54b4f8',     // 💻 현재 진행 중인 작업
+                IN_REVIEW: '3fdc4773',       // 👀 PR 생성되어 코드 리뷰 중인 작업
+                DONE: '98236657'            // ✅ 완료되고 배포된 작업
+              }
+            };
+
+            // 이슈나 PR을 특정 컬럼으로 이동시키는 함수
+            async function moveIssueToColumn(itemId, columnId) {
+              const mutation = `
+                mutation {
+                  updateProjectV2ItemFieldValue(
+                    input: {
+                      projectId: "${PROJECT.ID}"
+                      itemId: "${itemId}"
+                      fieldId: "Status"
+                      value: { 
+                        singleSelectOptionId: "${columnId}"
+                      }
+                    }
+                  ) {
+                    projectV2Item {
+                      id
+                    }
+                  }
+                }
+              `;
+              
+              await github.graphql(mutation);
+            }
+
+            // 이슈 자동화
+            if (context.eventName === 'issues') {
+              const repo = context.payload.repository.name.toLowerCase();
+              
+              if (context.payload.action === 'opened') {
+                // FE 레포지토리의 이슈는 Backlog로 이동
+                if (repo === 'fe') {
+                  await moveIssueToColumn(context.payload.issue.node_id, PROJECT.COLUMNS.BACKLOG);
+                }
+                // BE 레포지토리의 이슈는 Sprint Backlog로 이동
+                else if (repo === 'be') {
+                  await moveIssueToColumn(context.payload.issue.node_id, PROJECT.COLUMNS.SPRINT_BACKLOG);
+                }
+              }
+              
+              // 이슈가 닫히면 Done으로 이동
+              else if (context.payload.action === 'closed') {
+                await moveIssueToColumn(context.payload.issue.node_id, PROJECT.COLUMNS.DONE);
+              }
+            }
+
+            // PR 자동화
+            if (context.eventName === 'pull_request') {
+              if (context.payload.action === 'opened') {
+                // PR이 열리면 In Review로 이동
+                await moveIssueToColumn(context.payload.pull_request.node_id, PROJECT.COLUMNS.IN_REVIEW);
+              }
+              else if (context.payload.action === 'closed' && context.payload.pull_request.merged) {
+                // PR이 머지되면 Done으로 이동
+                await moveIssueToColumn(context.payload.pull_request.node_id, PROJECT.COLUMNS.DONE);
+              }
+            }
+
+  # PR 리뷰어 자동 할당
+  add_reviewers:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.PROJECT_TOKEN }}
+          script: |
+            await github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              reviewers: ['choco5958', 'lim3873', 'tlswltjq']  // PR 리뷰어 목록
+            });
