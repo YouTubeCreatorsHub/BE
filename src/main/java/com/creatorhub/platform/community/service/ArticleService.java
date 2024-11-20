@@ -34,9 +34,9 @@ public class ArticleService {
         return articleRepository.findById(articleId).orElseThrow(NoSuchElementException::new);
     }
 
-    public Page<Article> getArticles(Board board, Integer page, Integer size) {
+    public Page<Article> getArticles(Long boardId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        return articleRepository.findAllByBoard(board, pageable);
+        return articleRepository.findAllByBoard_Id(boardId, pageable);
     }
 
     public Article updateArticleTitle(Article article, String title) {
