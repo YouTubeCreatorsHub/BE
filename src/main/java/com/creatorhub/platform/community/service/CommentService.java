@@ -2,7 +2,7 @@ package com.creatorhub.platform.community.service;
 
 import com.creatorhub.platform.community.entity.Article;
 import com.creatorhub.platform.community.entity.Comment;
-import com.creatorhub.platform.community.entity.User;
+import com.creatorhub.platform.community.entity.Member;
 import com.creatorhub.platform.community.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,12 +18,12 @@ import java.util.NoSuchElementException;
 public class CommentService {
     private final CommentRepository commentRepository;
 
-    public Comment createComment(String content, Article article, User user) {
+    public Comment createComment(String content, Article article, Member member) {
         return commentRepository.save(
                 Comment.builder()
                         .content(content)
                         .article(article)
-                        .user(user)
+                        .member(member)
                         .createdAt(LocalDateTime.now())
                         .build()
         );
