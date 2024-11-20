@@ -26,7 +26,7 @@ public class Board {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public Board rename(String newName) {
+    public Board updateName(String newName) {
         this.name = newName;
         return this;
     }

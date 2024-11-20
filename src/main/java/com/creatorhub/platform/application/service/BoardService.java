@@ -25,7 +25,7 @@ public class BoardService {
     }
 
     public  Board updateBoardName(Board board, String newName){
-        Board renamed = board.rename(newName);
+        Board renamed = board.updateName(newName);
         return boardRepository.save(renamed);
     }
 
