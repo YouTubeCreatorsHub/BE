@@ -1,0 +1,53 @@
+name: Project Automation
+
+on:
+  issues:
+    types: [opened, reopened, closed]
+  pull_request:
+    types: [opened, closed, reopened]
+
+jobs:
+
+  issue_automation:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repository: ['.github', 'BE', 'fe'] 
+        branch: ['main', 'dev']
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: ${{ matrix.repository }}
+        ref: ${{ matrix.branch }}
+
+    - uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.projects.createCard({
+            project_id: 1,
+            column_id: 12,
+            content_id: context.payload.issue.id,
+            content_type: 'Issue'
+          })
+
+          github.rest.projects.moveCard({
+            card_id: context.payload.project_card.id, 
+            position: 'top',
+            column_id: 13 // In Review column
+          })
+
+          if (context.payload.pull_request.merged) {
+            github.rest.projects.moveCard({
+              card_id: context.payload.project_card.id,
+              position: 'top', 
+              column_id: 14 // Done column
+            })
+          }
+
+  add_reviewers:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/add-reviewer@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        reviewers: [choco5958, lim3873, tlswltjq]
