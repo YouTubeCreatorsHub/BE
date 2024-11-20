@@ -1,7 +1,7 @@
-package com.creatorhub.platform.domain.repository;
+package com.creatorhub.platform.community.repository;
 
-import com.creatorhub.platform.domain.entity.Article;
-import com.creatorhub.platform.domain.entity.Comment;
+import com.creatorhub.platform.community.entity.Article;
+import com.creatorhub.platform.community.entity.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

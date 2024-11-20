@@ -1,4 +1,4 @@
-package com.creatorhub.platform.domain.entity;
+package com.creatorhub.platform.community.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

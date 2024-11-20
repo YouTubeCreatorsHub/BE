@@ -1,7 +1,7 @@
-package com.creatorhub.platform.application.service;
+package com.creatorhub.platform.community.service;
 
-import com.creatorhub.platform.domain.entity.Category;
-import com.creatorhub.platform.domain.repository.CategoryRepository;
+import com.creatorhub.platform.community.entity.Category;
+import com.creatorhub.platform.community.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

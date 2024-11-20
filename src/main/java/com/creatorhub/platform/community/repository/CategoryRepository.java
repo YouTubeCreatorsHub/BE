@@ -1,6 +1,6 @@
-package com.creatorhub.platform.domain.repository;
+package com.creatorhub.platform.community.repository;
 
-import com.creatorhub.platform.domain.entity.Category;
+import com.creatorhub.platform.community.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

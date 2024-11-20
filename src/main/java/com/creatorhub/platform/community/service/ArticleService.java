@@ -1,9 +1,9 @@
-package com.creatorhub.platform.application.service;
+package com.creatorhub.platform.community.service;
 
-import com.creatorhub.platform.domain.entity.Article;
-import com.creatorhub.platform.domain.entity.Board;
-import com.creatorhub.platform.domain.entity.Category;
-import com.creatorhub.platform.domain.repository.ArticleRepository;
+import com.creatorhub.platform.community.entity.Article;
+import com.creatorhub.platform.community.entity.Board;
+import com.creatorhub.platform.community.entity.Category;
+import com.creatorhub.platform.community.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
