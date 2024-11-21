@@ -33,16 +33,18 @@ public class CommentService {
         return commentRepository.findById(commentId).orElseThrow(NoSuchElementException::new);
     }
 
-    public Page<Comment> getComments(Article article, Integer page, Integer size) {
+    public Page<Comment> getComments(Long articleId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        return commentRepository.findAllByArticle(article, pageable);
+        return commentRepository.findAllByArticleId(articleId, pageable);
     }
 
-    public Comment updateComment(Comment comment, String newContent) {
+    public Comment updateComment(Long commentId, String newContent) {
+        Comment comment = getComment(commentId);
         return commentRepository.save(comment.updateContent(newContent));
     }
 
-    public Comment deleteComment(Comment comment) {
+    public Comment deleteComment(Long commentId) {
+        Comment comment = getComment(commentId);
         commentRepository.delete(comment);
         return comment;
     }

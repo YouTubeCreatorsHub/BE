@@ -3,6 +3,7 @@ package com.creatorhub.platform;
 import com.creatorhub.platform.community.entity.Article;
 import com.creatorhub.platform.community.entity.Board;
 import com.creatorhub.platform.community.entity.Category;
+import com.creatorhub.platform.community.entity.Comment;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +32,14 @@ public class Fixture {
                 .id(1L)
                 .name(name)
                 .createdAt(LocalDateTime.now())
+                .build();
+    }
+    public Comment createComment(String content, Article article) {
+        return Comment.builder()
+                .id(1L)
+                .content(content)
+                .createdAt(LocalDateTime.now())
+                .article(article)
                 .build();
     }
 }
