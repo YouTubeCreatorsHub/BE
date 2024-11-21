@@ -26,4 +26,11 @@ public class Fixture {
                 .modifiedAt(LocalDateTime.now())
                 .build();
     }
+    public Category createCategory(String name){
+        return Category.builder()
+                .id(1L)
+                .name(name)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
 }
