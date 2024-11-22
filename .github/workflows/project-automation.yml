@@ -170,7 +170,7 @@ jobs:
                 case 'reopened':
                   await moveIssueToColumn(issueId, 
                     hasAssignees ? PROJECT.COLUMNS.IN_PROGRESS :
-                    repo === 'fe' ? PROJECT.COLUMNS.BACKLOG : PROJECT.COLUMNS.SPRINT_BACKLOG
+                    repo === 'BE' ? PROJECT.COLUMNS.BACKLOG : PROJECT.COLUMNS.SPRINT_BACKLOG
                   );
                   break;
                 case 'assigned':
@@ -180,7 +180,7 @@ jobs:
                 case 'unassigned':
                 case 'unlabeled':
                     await moveIssueToColumn(issueId,
-                      repo === 'fe' ? PROJECT.COLUMNS.BACKLOG : PROJECT.COLUMNS.SPRINT_BACKLOG
+                      repo === 'BE' ? PROJECT.COLUMNS.BACKLOG : PROJECT.COLUMNS.SPRINT_BACKLOG
                     );
                   break;
                 case 'closed':
