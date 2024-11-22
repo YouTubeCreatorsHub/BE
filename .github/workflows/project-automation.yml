@@ -1,53 +1,221 @@
-name: Project Automation
+name: Project Board Automation
 
 on:
   issues:
-    types: [opened, reopened, closed]
+    types: [opened, reopened, closed, assigned, unassigned, labeled, unlabeled]
   pull_request:
-    types: [opened, closed, reopened]
+    types: [opened, reopened, closed, assigned, unassigned, deleted]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  repository-projects: write
 
 jobs:
-
-  issue_automation:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        repository: ['.github', 'BE', 'fe'] 
-        branch: ['main', 'dev']
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        repository: ${{ matrix.repository }}
-        ref: ${{ matrix.branch }}
-
-    - uses: actions/github-script@v6
-      with:
-        script: |
-          github.rest.projects.createCard({
-            project_id: 1,
-            column_id: 12,
-            content_id: context.payload.issue.id,
-            content_type: 'Issue'
-          })
-
-          github.rest.projects.moveCard({
-            card_id: context.payload.project_card.id, 
-            position: 'top',
-            column_id: 13 // In Review column
-          })
-
-          if (context.payload.pull_request.merged) {
-            github.rest.projects.moveCard({
-              card_id: context.payload.project_card.id,
-              position: 'top', 
-              column_id: 14 // Done column
-            })
-          }
-
-  add_reviewers:
+  project_automation:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/add-reviewer@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        reviewers: [choco5958, lim3873, tlswltjq]
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.AUTO_ACTIONS_TOKEN }}
+          script: |
+            // 프로젝트 설정
+            const PROJECT = {
+              ID: '${{ secrets.PROJECT_ID }}',
+              STATUS_FIELD: '${{ secrets.STATUS_FIELD_ID }}',
+              COLUMNS: {
+                BACKLOG: '17052d30',
+                SPRINT_BACKLOG: '2b4b3335',
+                IN_PROGRESS: 'dc54b4f8',
+                IN_REVIEW: '3fdc4773',
+                DONE: '98236657'
+              }
+            };
+
+            // 프로젝트 관련 GraphQL 뮤테이션
+            const mutations = {
+              add: `
+                mutation($projectId: ID!, $contentId: ID!) {
+                  addProjectV2ItemById(input: {
+                    projectId: $projectId
+                    contentId: $contentId
+                  }) {
+                    item { id }
+                  }
+                }
+              `,
+              updateStatus: `
+                mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $columnId: String!) {
+                  updateProjectV2ItemFieldValue(
+                    input: {
+                      projectId: $projectId
+                      itemId: $itemId
+                      fieldId: $fieldId
+                      value: { singleSelectOptionId: $columnId }
+                    }
+                  ) {
+                    projectV2Item { id }
+                  }
+                }
+              `,
+              delete: `
+                mutation($projectId: ID!, $itemId: ID!) {
+                  deleteProjectV2Item(input: {
+                    projectId: $projectId
+                    itemId: $itemId
+                  }) {
+                    deletedItemId
+                  }
+                }
+              `
+            };
+
+            // 프로젝트 작업 함수들
+            async function addToProject(contentId) {
+              const result = await github.graphql(mutations.add, {
+                projectId: PROJECT.ID,
+                contentId: contentId
+              });
+              return result.addProjectV2ItemById.item.id;
+            }
+
+            async function moveIssueToColumn(contentId, columnId) {
+              try {
+                const itemId = await addToProject(contentId);
+                console.log('Item added with ID:', itemId);
+                
+                await github.graphql(mutations.updateStatus, {
+                  projectId: PROJECT.ID,
+                  itemId: itemId,
+                  fieldId: PROJECT.STATUS_FIELD,
+                  columnId: columnId
+                });
+                
+                console.log('Status updated successfully');
+              } catch (error) {
+                if (!error.message.includes('already exists')) {
+                  console.error('Error:', error);
+                  throw error;
+                }
+              }
+            }
+
+            async function findProjectItem(contentId) {
+              const query = `
+                query($projectId: ID!) {
+                  node(id: $projectId) {
+                    ... on ProjectV2 {
+                      items(first: 100) {
+                        nodes {
+                          id
+                          content {
+                            ... on PullRequest {
+                              id
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              `;
+
+              try {
+                const result = await github.graphql(query, {
+                  projectId: PROJECT.ID
+                });
+
+                const projectItem = result.node.items.nodes.find(
+                  item => item.content?.id === contentId
+                );
+
+                console.log('Found project item:', projectItem);
+                return projectItem?.id;
+              } catch (error) {
+                console.error('Error finding project item:', error);
+                throw error;
+              }
+            }
+
+            async function deleteFromProject(contentId) {
+              try {
+                const projectItemId = await findProjectItem(contentId);
+                if (projectItemId) {
+                  await github.graphql(mutations.delete, {
+                    projectId: PROJECT.ID,
+                    itemId: projectItemId
+                  });
+                  console.log('Item successfully removed from project');
+                } else {
+                  console.log('Item not found in project');
+                }
+              } catch (error) {
+                console.error('Error removing item from project:', error);
+              }
+            }
+
+            // 이슈 처리
+            if (context.eventName === 'issues') {
+              const issueId = context.payload.issue.node_id;
+              const repo = context.payload.repository.name.toLowerCase();
+              const hasAssignees = context.payload.issue.assignees?.length > 0;
+              
+              switch (context.payload.action) {
+                case 'opened':
+                case 'reopened':
+                  await moveIssueToColumn(issueId, 
+                    hasAssignees ? PROJECT.COLUMNS.IN_PROGRESS :
+                    repo === 'BE' ? PROJECT.COLUMNS.BACKLOG : PROJECT.COLUMNS.SPRINT_BACKLOG
+                  );
+                  break;
+                case 'assigned':
+                case 'labeled':
+                  await moveIssueToColumn(issueId, PROJECT.COLUMNS.IN_PROGRESS);
+                  break;
+                case 'unassigned':
+                case 'unlabeled':
+                    await moveIssueToColumn(issueId,
+                      repo === 'BE' ? PROJECT.COLUMNS.BACKLOG : PROJECT.COLUMNS.SPRINT_BACKLOG
+                    );
+                  break;
+                case 'closed':
+                  await moveIssueToColumn(issueId, PROJECT.COLUMNS.DONE);
+                  break;
+              }
+            }
+
+            // PR 처리
+            if (context.eventName === 'pull_request') {
+              const prId = context.payload.pull_request.node_id;
+              const hasAssignees = context.payload.pull_request.assignees?.length > 0;
+              
+              switch (context.payload.action) {
+                case 'opened':
+                case 'reopened':
+                  await moveIssueToColumn(prId, 
+                    hasAssignees ? PROJECT.COLUMNS.IN_PROGRESS : PROJECT.COLUMNS.IN_REVIEW
+                  );
+                  break;
+                case 'assigned':
+                  await moveIssueToColumn(prId, PROJECT.COLUMNS.IN_PROGRESS);
+                  break;
+                case 'unassigned':
+                  await moveIssueToColumn(prId, PROJECT.COLUMNS.IN_REVIEW);
+                  break;
+                case 'closed':
+                  if (context.payload.pull_request.merged) {
+                    await moveIssueToColumn(prId, PROJECT.COLUMNS.DONE);
+                  } else {
+                    await deleteFromProject(prId);
+                  }
+                  break;
+                case 'deleted':
+                  await deleteFromProject(prId);
+                  break;
+              }
+            }
