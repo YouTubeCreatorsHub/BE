@@ -24,12 +24,14 @@ public class BoardService {
         return boardRepository.findById(boardId).orElseThrow(NoSuchElementException::new);
     }
 
-    public  Board updateBoardName(Board board, String newName){
-        Board renamed = board.updateName(newName);
-        return boardRepository.save(renamed);
+    public  Board updateBoardName(Long boardId, String newName){
+        Board board = retrieveBoard(boardId);
+        board.updateName(newName);
+        return boardRepository.save(board);
     }
 
-    public Board deleteBoard(Board board){
+    public Board deleteBoard(Long boardId){
+        Board board = retrieveBoard(boardId);
         boardRepository.delete(board);
         return board;
     }
