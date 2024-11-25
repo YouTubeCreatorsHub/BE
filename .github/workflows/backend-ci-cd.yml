@@ -22,6 +22,10 @@ jobs:
     steps:
     # 코드 체크아웃
     - uses: actions/checkout@v3
+  
+    # Gradle Wrapper 파일 존재 확인
+    - name: Validate Gradle wrapper
+      uses: gradle/wrapper-validation-action@v1
     
     # JDK 17 설정
     - name: Set up JDK 17
