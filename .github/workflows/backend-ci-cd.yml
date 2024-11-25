@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest  # Ubuntu 최신 버전에서 실행
     defaults:
       run:
-        working-directory: ./BE  # 작업 디렉토리를 BE로 설정
+        working-directory: .
 
     steps:
     # 코드 체크아웃
