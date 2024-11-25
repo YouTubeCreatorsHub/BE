@@ -34,28 +34,33 @@ public class ArticleService {
         return articleRepository.findById(articleId).orElseThrow(NoSuchElementException::new);
     }
 
-    public Page<Article> getArticles(Board board, Integer page, Integer size) {
+    public Page<Article> getArticles(Long boardId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
-        return articleRepository.findAllByBoard(board, pageable);
+        return articleRepository.findAllByBoard_Id(boardId, pageable);
     }
 
-    public Article updateArticleTitle(Article article, String title) {
+    public Article updateArticleTitle(Long articleId, String title) {
+        Article article = getArticle(articleId);
         return articleRepository.save(article.updateTitle(title));
     }
 
-    public Article updateArticleContent(Article article, String content) {
+    public Article updateArticleContent(Long articleId, String content) {
+        Article article = getArticle(articleId);
         return articleRepository.save(article.updateContent(content));
     }
 
-    public Article updateArticleCategory(Article article, Category category) {
+    public Article updateArticleCategory(Long articleId, Category category) {
+        Article article = getArticle(articleId);
         return articleRepository.save(article.updateCategory(category));
     }
 
-    public Article updateArticle(Article article, Board board) {
+    public Article updateArticleBoard(Long articleId, Board board) {
+        Article article = getArticle(articleId);
         return articleRepository.save(article.updateBoard(board));
     }
 
-    public Article deleteArticle(Article article) {
+    public Article deleteArticle(Long articleId) {
+        Article article = getArticle(articleId);
         articleRepository.delete(article);
         return article;
     }

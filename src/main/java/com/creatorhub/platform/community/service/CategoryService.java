@@ -26,11 +26,13 @@ public class CategoryService {
         return categoryRepository.findById(categoryId).orElseThrow(NoSuchElementException::new);
     }
 
-    public Category updateCategoryName(Category category, String newNmae) {
+    public Category updateCategoryName(Long categoryId, String newNmae) {
+        Category category = getCategory(categoryId);
         return categoryRepository.save(category.updateName(newNmae));
     }
 
-    public Category deleteCategoryName(Category category) {
+    public Category deleteCategoryName(Long categoryId) {
+        Category category = getCategory(categoryId);
         categoryRepository.delete(category);
         return category;
     }
