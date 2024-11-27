@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.creatorhub.infrastructure.persistence.resource.adapter.ResourcePersistenceAdapterTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-11-27T14:55:25" hostname="DESKTOP-DR9TCJN" time="0.109">
+  <properties/>
+  <testcase name="findById_Success()" classname="com.creatorhub.infrastructure.persistence.resource.adapter.ResourcePersistenceAdapterTest" time="0.105"/>
+  <testcase name="save_Success()" classname="com.creatorhub.infrastructure.persistence.resource.adapter.ResourcePersistenceAdapterTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
