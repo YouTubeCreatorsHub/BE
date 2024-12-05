@@ -2,10 +2,10 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ec2-user/app
+    destination: /home/ec2-user/app/fe
     overwrite: yes
 permissions:
-  - object: /home/ec2-user/app/
+  - object: /home/ec2-user/app/fe
     pattern: "**"
     owner: ec2-user
     group: ec2-user
@@ -13,9 +13,13 @@ permissions:
 hooks:
   BeforeInstall:
     - location: scripts/before_install.sh
-      timeout: 300
+      timeout: 60
       runas: ec2-user
   ApplicationStart:
     - location: scripts/deploy.sh
+      timeout: 60
+      runas: ec2-user
+  ValidateService:
+    - location: scripts/validate.sh
       timeout: 60
       runas: ec2-user
