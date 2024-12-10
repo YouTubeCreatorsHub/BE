@@ -21,6 +21,18 @@ spring:
       refresh-token:
         expiration: 86400000
 
+cloud:
+  aws:
+    s3:
+      enabled: false
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: test
+      secret-key: test
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

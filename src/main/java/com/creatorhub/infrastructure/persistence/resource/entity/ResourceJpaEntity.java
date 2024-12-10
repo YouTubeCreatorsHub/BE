@@ -25,6 +25,8 @@ public class ResourceJpaEntity extends BaseEntity {
     private ResourceType type;
 
     private String url;
+    @Column(name = "thumbnail_url")  // 컬럼명 명시적 지정
+    private String thumbnailUrl;  // 썸네일 URL 필드 추가
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

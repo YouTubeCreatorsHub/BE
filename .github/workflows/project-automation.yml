@@ -2,9 +2,9 @@ name: Project Board Automation
 
 on:
   issues:
-    types: [opened, reopened, closed, assigned, unassigned, labeled, unlabeled]
+    types: [ opened, reopened, closed, assigned, unassigned, labeled, unlabeled ]
   pull_request:
-    types: [opened, reopened, closed, assigned, unassigned, deleted]
+    types: [ opened, reopened, closed, assigned, unassigned, deleted ]
 
 permissions:
   contents: write
@@ -215,4 +215,4 @@ jobs:
                   break;
               }
             }
-            }
+            

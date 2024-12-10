@@ -15,6 +15,7 @@ public class ResourceResponse {
     private final String name;
     private final ResourceType type;
     private final String url;
+    private final String thumbnailUrl;
     private final LicenseType licenseType;
     private final ResourceMetadata metadata;
     private final LocalDateTime createdAt;
