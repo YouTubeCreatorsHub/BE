@@ -10,4 +10,4 @@ public class CreatorHubApplication {
     public static void main(String[] args) {
         SpringApplication.run(CreatorHubApplication.class, args);
     }
-}
+}git pull origin dev

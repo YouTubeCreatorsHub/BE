@@ -106,8 +106,6 @@ Rsrc/main/java/com/creatorhub/presentation/resource/FileUploadProgressListener.j
 v
 Fsrc/test/java/com/creatorhub/community/service/ArticleServiceTest.java,a\f\af2569f471d8b4466937c96ae1c5cbc839a173f0
 ƒ
-Ssrc/main/java/com/creatorhub/infrastructure/websocket/config/WebSecurityConfig.java,e\e\ee129c784c62c2bd895f58c703e8bcdf18524117
-ƒ
 Ssrc/test/java/com/creatorhub/infrastructure/storage/s3/FileUploadWebSocketTest.java,e\0\e0fc13625a9e30c4d16fd55970136a05fb503c81
 œ
 lsrc/test/java/com/creatorhub/infrastructure/persistence/resource/adapter/ResourcePersistenceAdapterTest.java,e\6\e6820b5528f2b59778b2b3342375582275d10dde
@@ -177,8 +175,6 @@ x
 Hsrc/main/java/com/creatorhub/infrastructure/common/config/JpaConfig.java,4\f\4f8ad1ec5a7b633eb3411b686d8602f279d2fea7
 †
 Vsrc/test/java/com/creatorhub/presentation/common/error/GlobalExceptionHandlerTest.java,6\8\686cad44c8e1990ce2369ded2fc25758fd24524e
-g
-7src/main/java/com/creatorhub/CreatorHubApplication.java,3\d\3dbf7d4e0299e33d6678aa097a68865c75a8693b
 ‰
 Ysrc/test/java/com/creatorhub/presentation/resource/controller/ResourceControllerTest.java,8\a\8af8c82de9d9c2d371606a30c8245ef40591253b
 ƒ
