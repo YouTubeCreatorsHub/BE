@@ -88,12 +88,14 @@ jobs:
               try {
                 const itemId = await addToProject(contentId);
                 console.log('Item added with ID:', itemId);
+                
                 await github.graphql(mutations.updateStatus, {
                   projectId: PROJECT.ID,
                   itemId: itemId,
                   fieldId: PROJECT.STATUS_FIELD,
                   columnId: columnId
                 });
+                
                 console.log('Status updated successfully');
               } catch (error) {
                 if (!error.message.includes('already exists')) {
@@ -162,6 +164,7 @@ jobs:
               const issueId = context.payload.issue.node_id;
               const repo = context.payload.repository.name.toLowerCase();
               const hasAssignees = context.payload.issue.assignees?.length > 0;
+              
               switch (context.payload.action) {
                 case 'opened':
                 case 'reopened':
@@ -190,6 +193,7 @@ jobs:
             if (context.eventName === 'pull_request') {
               const prId = context.payload.pull_request.node_id;
               const hasAssignees = context.payload.pull_request.assignees?.length > 0;
+              
               switch (context.payload.action) {
                 case 'opened':
                 case 'reopened':
@@ -215,4 +219,7 @@ jobs:
                   break;
               }
             }
+<<<<<<< HEAD
             
+=======
+>>>>>>> 0764e8e613610ce0f1ee8036e89bc04a6c7c52c6
