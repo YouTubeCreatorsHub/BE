@@ -3,9 +3,6 @@ package com.creatorhub.presentation.resource.controller;
 import com.creatorhub.application.resource.dto.CreateResourceCommand;
 import com.creatorhub.application.resource.dto.ResourceResponse;
 import com.creatorhub.application.resource.service.ResourceService;
-import com.creatorhub.domain.community.controller.ArticleController;
-import com.creatorhub.domain.community.repository.ArticleRepository;
-import com.creatorhub.domain.community.service.ArticleService;
 import com.creatorhub.domain.resource.vo.LicenseType;
 import com.creatorhub.domain.resource.vo.ResourceType;
 import com.creatorhub.infrastructure.persistence.resource.mapper.ResourceMapper;
@@ -47,16 +44,6 @@ class ResourceControllerTest {
 
     @MockBean
     private ResourceMapper resourceMapper;
-
-    // ArticleController 관련 의존성들도 모두 Mock으로 처리
-    @MockBean
-    private ArticleController articleController;
-
-    @MockBean
-    private ArticleService articleService;
-
-    @MockBean
-    private ArticleRepository articleRepository;
 
     @TestConfiguration
     static class TestConfig {

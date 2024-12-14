@@ -21,6 +21,12 @@ repositories {
     mavenCentral()
 }
 
+def querydslDir = "$buildDir/generated/querydsl"
+
+sourceSets {
+    main.java.srcDirs += [ querydslDir ]
+}
+
 dependencies {
     // Spring Boot Starters
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -29,6 +35,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // QueryDSL
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    implementation 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 
     // Spring Security
     implementation 'org.springframework.security:spring-security-messaging'
@@ -84,9 +96,8 @@ tasks.withType(JavaCompile) {
             '-parameters',
             '-Amapstruct.defaultComponentModel=spring',
             '-Amapstruct.unmappedTargetPolicy=IGNORE'
-
     ]
-
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
     options.annotationProcessorPath = configurations.annotationProcessor
     options.compilerArgs += [
             '-Amapstruct.verbose=true'
@@ -98,6 +109,10 @@ compileJava {
             '-Amapstruct.defaultComponentModel=spring',
             '-Amapstruct.unmappedTargetPolicy=IGNORE'
     ]
+}
+
+clean.doLast {
+    file(querydslDir).deleteDir()
 }
 
 test {
