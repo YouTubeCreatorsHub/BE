@@ -1,0 +1,6 @@
+# application.yml
+spring:
+  profiles:
+    active: local
+  main:
+    allow-bean-definition-overriding: true
