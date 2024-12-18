@@ -7,7 +7,7 @@ mkdir -p /home/ec2-user/app/backend
 # 배포 시작 시간 기록
 echo "> 배포 시작 : $(date +%c)" >> $DEPLOY_LOG
 
-# JAR 파일 찾기
+# JAR 파일 찾기 (plain JAR 제외)
 JAR_NAME=$(ls -tr /home/ec2-user/app/backend/build/libs/*[!plain].jar | tail -n 1)
 echo "> JAR Name: $JAR_NAME" >> $DEPLOY_LOG
 
@@ -22,6 +22,13 @@ else
   sleep 5
 fi
 
+# AWS 및 애플리케이션 환경 변수 설정
+export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+export AWS_S3_BUCKET=${AWS_S3_BUCKET}
+export AWS_REGION=${AWS_REGION}
+export AWS_STACK_AUTO=${AWS_STACK_AUTO}
+
 # JAR 파일 실행 (Spring이 인식할 수 있는 형식으로 환경 변수 전달)
 echo "> $JAR_NAME 배포" >> $DEPLOY_LOG
 nohup java -jar \
@@ -30,9 +37,11 @@ nohup java -jar \
     -Dcloud.aws.s3.bucket=${AWS_S3_BUCKET} \
     -Dcloud.aws.region.static=${AWS_REGION} \
     -Dcloud.aws.stack.auto=${AWS_STACK_AUTO} \
+    -Dspring.security.jwt.secret-key=${JWT_SECRET_KEY} \
+    -Dspring.security.jwt.expiration=${JWT_EXPIRATION} \
+    -Dspring.security.jwt.refresh-token.expiration=${JWT_REFRESH_EXPIRATION} \
     -Dspring.profiles.active=prod \
     $JAR_NAME > /home/ec2-user/app/backend/nohup.out 2>&1 &
-
 
 # 실행 확인
 sleep 3
