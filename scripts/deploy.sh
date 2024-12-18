@@ -22,26 +22,6 @@ else
   sleep 5
 fi
 
-# AWS 환경 변수 설정 및 확인
-AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
-AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
-AWS_REGION=$(aws configure get region)
-
-# 환경 변수 확인 로깅
-echo "> AWS Access Key ID: ${AWS_ACCESS_KEY_ID}" >> $DEPLOY_LOG
-echo "> AWS Region: ${AWS_REGION}" >> $DEPLOY_LOG
-
-# 환경 변수 설정
-export AWS_ACCESS_KEY_ID
-export AWS_SECRET_ACCESS_KEY
-export AWS_REGION
-export AWS_S3_BUCKET
-export AWS_STACK_AUTO
-
-# 환경 변수 확인을 위한 로깅
-echo "> 환경 변수 확인:" >> $DEPLOY_LOG
-env | grep AWS >> $DEPLOY_LOG
-
 # JAR 파일 실행 (Spring이 인식할 수 있는 형식으로 환경 변수 전달)
 echo "> $JAR_NAME 배포" >> $DEPLOY_LOG
 nohup java -jar \
