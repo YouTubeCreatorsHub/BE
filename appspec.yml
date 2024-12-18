@@ -10,6 +10,13 @@ permissions:
     owner: ec2-user
     group: ec2-user
     mode: 755
+environment:
+  variables:
+    AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    JWT_SECRET_KEY: "7134743777217A25432A462D4A614E645267556B58703272357538782F413F4428472B4B6250655368566D597133743677397A244326452948404D635166546A"
+    JWT_EXPIRATION: "3600000"
+    JWT_REFRESH_EXPIRATION: "86400000"
 hooks:
   BeforeInstall:
     - location: scripts/before_install.sh
