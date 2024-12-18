@@ -77,10 +77,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3  # 소스 코드 체크아웃
 
+      - name: Create build directory  # build/libs 디렉토리 생성
+        run: mkdir -p build/libs
+
       - name: Download JAR  # build job에서 생성된 JAR 파일 다운로드
         uses: actions/download-artifact@v3
         with:
           name: jar-file  # 다운로드할 아티팩트 이름
+          path: build/libs  # JAR 파일을 build/libs 디렉토리에 다운로드
 
       - name: Configure AWS credentials  # AWS 자격 증명 설정
         uses: aws-actions/configure-aws-credentials@v1
