@@ -22,10 +22,14 @@ else
   sleep 5
 fi
 
-# JAR 파일 실행
+# JAR 파일 실행 (환경 변수를 통한 설정 전달)
 echo "> $JAR_NAME 배포" >> $DEPLOY_LOG
 nohup java -jar \
-    -Dspring.config.location=/home/ec2-user/app/backend/application.yml \
+    -DAWS_ACCESS_KEY=${AWS_ACCESS_KEY} \
+    -DAWS_SECRET_KEY=${AWS_SECRET_KEY} \
+    -DJWT_SECRET_KEY=${JWT_SECRET_KEY} \
+    -DJWT_EXPIRATION=${JWT_EXPIRATION} \
+    -DJWT_REFRESH_EXPIRATION=${JWT_REFRESH_EXPIRATION} \
     -Dspring.profiles.active=prod \
     $JAR_NAME > /home/ec2-user/app/backend/nohup.out 2>&1 &
 
