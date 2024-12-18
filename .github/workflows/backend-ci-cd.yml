@@ -58,14 +58,14 @@ jobs:
         run: ./gradlew build -x test  # 테스트 제외하고 빌드
 
       - name: Upload JAR  # JAR 파일을 아티팩트로 저장
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jar-file  # 아티팩트 이름
           path: build/libs/*.jar  # JAR 파일 경로
 
       - name: Upload test results  # 테스트 결과 업로드
         if: always()  # 항상 실행
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results  # 결과물 이름
           path: build/reports/tests/test  # 테스트 결과 경로
@@ -81,7 +81,7 @@ jobs:
         run: mkdir -p build/libs
 
       - name: Download JAR  # build job에서 생성된 JAR 파일 다운로드
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: jar-file  # 다운로드할 아티팩트 이름
           path: build/libs  # JAR 파일을 build/libs 디렉토리에 다운로드
