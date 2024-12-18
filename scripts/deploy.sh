@@ -8,7 +8,7 @@ mkdir -p /home/ec2-user/app/backend
 echo "> 배포 시작 : $(date +%c)" >> $DEPLOY_LOG
 
 # JAR 파일 찾기
-JAR_NAME=$(ls -tr /home/ec2-user/app/backend/build/libs/*.jar | tail -n 1)
+JAR_NAME=$(ls -tr /home/ec2-user/app/backend/build/libs/*[!plain].jar | tail -n 1)
 echo "> JAR Name: $JAR_NAME" >> $DEPLOY_LOG
 
 # 실행 중인 프로세스가 있으면 종료
