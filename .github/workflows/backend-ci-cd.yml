@@ -38,10 +38,10 @@ jobs:
       - name: Run tests  # 테스트 실행
         env:
           # AWS 관련 환경 변수 설정
-          CLOUD_AWS_CREDENTIALS_ACCESS_KEY: ${{ secrets.TEST_AWS_ACCESS_KEY }}  # 테스트용 AWS 접근 키
-          CLOUD_AWS_CREDENTIALS_SECRET_KEY: ${{ secrets.TEST_AWS_SECRET_KEY }}  # 테스트용 AWS 시크릿 키
-          CLOUD_AWS_REGION_STATIC: ap-northeast-2  # AWS 서울 리전
-          CLOUD_AWS_S3_BUCKET: test-bucket  # 테스트용 S3 버킷
+          AWS_ACCESS_KEY: ${{ secrets.TEST_AWS_ACCESS_KEY }}  # 테스트용 AWS 접근 키
+          AWS_SECRET_KEY: ${{ secrets.TEST_AWS_SECRET_KEY }}  # 테스트용 AWS 시크릿 키
+          AWS_REGION: ap-northeast-2  # AWS 서울 리전
+          AWS_S3_BUCKET: test-bucket  # 테스트용 S3 버킷
           AWS_STACK_AUTO: false  # AWS 스택 자동 생성 비활성화
 
           # JWT 관련 환경 변수 설정
