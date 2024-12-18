@@ -25,8 +25,8 @@ fi
 # JAR 파일 실행 (Spring이 인식할 수 있는 형식으로 환경 변수 전달)
 echo "> $JAR_NAME 배포" >> $DEPLOY_LOG
 nohup java -jar \
-    -Dcloud.aws.credentials.access-key=${AWS_ACCESS_KEY} \
-    -Dcloud.aws.credentials.secret-key=${AWS_SECRET_KEY} \
+    -Dcloud.aws.credentials.access-key=${AWS_ACCESS_KEY_ID} \
+    -Dcloud.aws.credentials.secret-key=${AWS_SECRET_ACCESS_KEY} \
     -Dcloud.aws.s3.bucket=${AWS_S3_BUCKET} \
     -Dcloud.aws.region.static=${AWS_REGION} \
     -Dcloud.aws.stack.auto=${AWS_STACK_AUTO} \
