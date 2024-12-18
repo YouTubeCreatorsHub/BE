@@ -4,6 +4,10 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
   jpa:
     hibernate:
@@ -16,7 +20,7 @@ spring:
 
   security:
     jwt:
-      secret-key: test-jwt-secret-key
+      secret-key: 7134743777217A25432A462D4A614E645267556B58703272357538782F413F4428472B4B6250655368566D597133743677397A244326452948404D635166546A
       expiration: 3600000
       refresh-token:
         expiration: 86400000
@@ -24,14 +28,14 @@ spring:
 cloud:
   aws:
     s3:
-      enabled: false
-    stack:
-      auto: false
-    region:
-      static: ap-northeast-2
+      bucket: test-bucket
     credentials:
       access-key: test
       secret-key: test
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
 
 logging:
   level:

@@ -1,45 +1,41 @@
 package com.creatorhub.domain.community.entity;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.creatorhub.domain.common.entity.BaseEntity;
+import com.creatorhub.domain.common.error.BusinessException;
+import com.creatorhub.domain.common.error.ErrorCode;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-
-@Entity
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "comment")
-public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Comment extends BaseEntity {
+    private static final int MAX_CONTENT_LENGTH = 500;
 
-    @Column(name = "content")
-    private String content;
+    private String content;     // 댓글 내용
+    private Article article;    // 게시글
+    private Member member;      // 작성자
 
-    @ManyToOne
-    @JoinColumn(name = "article_id")
-    private Article article;
+    public void updateContent(String content) {
+        validateContent(content);
+        this.content = content;
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Member member;
+    private void validateContent(String content) {
+        if (content == null || content.isBlank()) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT, "댓글 내용은 필수입니다.");
+        }
+        if (content.length() > MAX_CONTENT_LENGTH) {
+            throw new BusinessException(
+                    ErrorCode.INVALID_INPUT,
+                    String.format("댓글 내용은 %d자를 초과할 수 없습니다.", MAX_CONTENT_LENGTH)
+            );
+        }
+    }
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name ="modified_at")
-    private LocalDateTime modifiedAt;
-
-    public Comment updateContent(String newContent) {
-        this.content = newContent;
-        this.modifiedAt = LocalDateTime.now();
-        return this;
+    public boolean isAuthor(Member member) {
+        return this.member.getId().equals(member.getId());
     }
 }

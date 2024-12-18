@@ -51,7 +51,7 @@ public class ResourceEntity extends BaseEntity {
         }
     }
 
-    public void delete() {
-        super.delete();
+    public void delete(String deleteBy) {
+        super.onDelete(deleteBy);
     }
 }
