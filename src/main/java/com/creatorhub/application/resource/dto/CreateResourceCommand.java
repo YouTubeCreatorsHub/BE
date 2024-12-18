@@ -5,6 +5,7 @@ import com.creatorhub.domain.resource.vo.ResourceMetadata;
 import com.creatorhub.domain.resource.vo.ResourceType;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.util.StringUtils;
 
 @Getter
 @Builder
@@ -16,6 +17,10 @@ public class CreateResourceCommand {
     private LicenseType licenseType;
     private ResourceMetadata metadata;
     private MultipartFile file;
+
+    public MultipartFile getFile() {
+        return file;
+    }
 
     public static CreateResourceCommand of(String name, ResourceType type, LicenseType licenseType,
                                            ResourceMetadata metadata, MultipartFile file) {

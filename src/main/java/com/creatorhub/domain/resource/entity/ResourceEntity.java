@@ -19,8 +19,17 @@ public class ResourceEntity extends BaseEntity {
     private String name;
     private ResourceType type;
     private String url;
+    private String thumbnailUrl;  // 썸네일 URL 필드 추가
     private LicenseType licenseType;
     private ResourceMetadata metadata;
+
+    public void updateUrl(String url) {
+        this.url = url;
+    }
+
+    public void updateThumbnailUrl(String thumbnailUrl) {  // 썸네일 URL 업데이트 메서드 추가
+        this.thumbnailUrl = thumbnailUrl;
+    }
 
     public void updateMetadata(ResourceMetadata metadata) {
         if (metadata == null) {
@@ -42,7 +51,7 @@ public class ResourceEntity extends BaseEntity {
         }
     }
 
-    public void delete() {
-        super.delete();
+    public void delete(String deleteBy) {
+        super.onDelete(deleteBy);
     }
 }

@@ -1,12 +1,16 @@
 package com.creatorhub.infrastructure.persistence.resource.adapter;
 
+import com.creatorhub.application.resource.dto.ResourceSearchCriteria;
 import com.creatorhub.domain.resource.entity.ResourceEntity;
 import com.creatorhub.domain.resource.repository.ResourceRepository;
+import com.creatorhub.infrastructure.persistence.resource.entity.ResourceJpaEntity;
 import com.creatorhub.infrastructure.persistence.resource.mapper.ResourceJpaMapper;
 import com.creatorhub.infrastructure.persistence.resource.repository.ResourceJpaRepository;
+import com.creatorhub.infrastructure.persistence.resource.specification.ResourceSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -42,5 +46,12 @@ public class ResourcePersistenceAdapter implements ResourceRepository {
     @Override
     public void deleteById(UUID id) {
         resourceJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<ResourceEntity> searchResources(ResourceSearchCriteria criteria, Pageable pageable) {
+        Specification<ResourceJpaEntity> spec = ResourceSpecification.withCriteria(criteria);
+        return resourceJpaRepository.findAll(spec, pageable)
+                .map(resourceJpaMapper::toDomain);
     }
 }
