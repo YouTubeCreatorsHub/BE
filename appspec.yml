@@ -13,9 +13,13 @@ permissions:
 hooks:
   BeforeInstall:
     - location: scripts/before_install.sh
-      timeout: 300
+      timeout: 60
       runas: ec2-user
   ApplicationStart:
     - location: scripts/deploy.sh
+      timeout: 60
+      runas: ec2-user
+  ValidateService:
+    - location: scripts/validate.sh
       timeout: 60
       runas: ec2-user
