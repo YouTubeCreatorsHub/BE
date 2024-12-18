@@ -22,14 +22,17 @@ else
   sleep 5
 fi
 
-# JAR 파일 실행 (환경 변수를 통한 설정 전달)
+# JAR 파일 실행 (Spring이 인식할 수 있는 형식으로 환경 변수 전달)
 echo "> $JAR_NAME 배포" >> $DEPLOY_LOG
 nohup java -jar \
-    -DAWS_ACCESS_KEY=${AWS_ACCESS_KEY} \
-    -DAWS_SECRET_KEY=${AWS_SECRET_KEY} \
-    -DJWT_SECRET_KEY=${JWT_SECRET_KEY} \
-    -DJWT_EXPIRATION=${JWT_EXPIRATION} \
-    -DJWT_REFRESH_EXPIRATION=${JWT_REFRESH_EXPIRATION} \
+    -Dcloud.aws.credentials.access-key=${AWS_ACCESS_KEY} \
+    -Dcloud.aws.credentials.secret-key=${AWS_SECRET_KEY} \
+    -Dcloud.aws.s3.bucket=${AWS_S3_BUCKET} \
+    -Dcloud.aws.region.static=${AWS_REGION} \
+    -Dcloud.aws.stack.auto=${AWS_STACK_AUTO} \
+    -Dspring.security.jwt.secret-key=${JWT_SECRET_KEY} \
+    -Dspring.security.jwt.expiration=${JWT_EXPIRATION} \
+    -Dspring.security.jwt.refresh-token.expiration=${JWT_REFRESH_EXPIRATION} \
     -Dspring.profiles.active=prod \
     $JAR_NAME > /home/ec2-user/app/backend/nohup.out 2>&1 &
 
