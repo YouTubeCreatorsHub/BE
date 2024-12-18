@@ -5,6 +5,7 @@ import com.creatorhub.application.community.comment.dto.CommentCommand;
 import com.creatorhub.application.community.comment.dto.CommentResponse;
 import com.creatorhub.application.community.comment.port.in.GetCommentUseCase;
 import com.creatorhub.application.community.comment.port.in.ManageCommentUseCase;
+import com.creatorhub.application.community.comment.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -17,7 +18,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,6 +33,7 @@ import java.util.UUID;
 public class CommentController {
     private final ManageCommentUseCase manageCommentUseCase;
     private final GetCommentUseCase getCommentUseCase;
+    private final CommentService commentService;
 
     @Operation(
             summary = "댓글 작성",
@@ -114,10 +115,10 @@ public class CommentController {
     })
     @GetMapping("/articles/{articleId}")
     public ApiResponse<Page<CommentResponse>> getCommentsByArticle(
-            @Parameter(description = "게시글 ID", required = true)
             @PathVariable UUID articleId,
-            @PageableDefault(size = 20, sort = "createdAt,desc") Pageable pageable) {
-        return ApiResponse.success(getCommentUseCase.getCommentsByArticleId(articleId, pageable));
+            Pageable pageable) {
+        Page<CommentResponse> comments = commentService.getCommentsByArticleId(articleId, pageable);
+        return ApiResponse.success(comments);  // 페이지 데이터를 응답에 포함
     }
 
     @Operation(
@@ -185,11 +186,8 @@ public class CommentController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("isAuthenticated() and (hasRole('ADMIN') or @commentService.isCommentAuthor(#id, #userDetails.username))")
-    public ApiResponse<Void> deleteComment(
-            @Parameter(description = "댓글 ID", required = true)
-            @PathVariable UUID id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+    @PreAuthorize("isAuthenticated() and (hasRole('ADMIN') or @commentService.isCommentOwner(#id, #userDetails.username))")
+    public ApiResponse<Void> deleteComment(@PathVariable UUID id, @AuthenticationPrincipal UserDetails userDetails) {
         manageCommentUseCase.deleteComment(id);
         return ApiResponse.success();
     }

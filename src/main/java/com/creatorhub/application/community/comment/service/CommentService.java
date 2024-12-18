@@ -103,4 +103,10 @@ public class CommentService implements ManageCommentUseCase, GetCommentUseCase {
             throw new UnauthorizedCommentModificationException();
         }
     }
+
+    public boolean isCommentOwner(UUID commentId, String username) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
+        return comment.getMember().getEmail().equals(username);
+    }
 }

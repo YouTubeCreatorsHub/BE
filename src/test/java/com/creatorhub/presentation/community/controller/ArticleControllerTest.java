@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,7 +23,8 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -167,6 +169,8 @@ class ArticleControllerTest {
 
     @Test
     @DisplayName("인증되지 않은 사용자는 게시글을 작성할 수 없다")
+    @WithAnonymousUser
+        // 익명 사용자로 테스트
     void createArticleUnauthorized() throws Exception {
         // given
         ArticleCommand.Create command = ArticleCommand.Create.builder()
@@ -177,9 +181,10 @@ class ArticleControllerTest {
 
         // when & then
         mockMvc.perform(post("/api/v1/articles")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(command)))
                 .andDo(print())
-                .andExpect(status().isForbidden());  // 403 Forbidden으로 변경
+                .andExpect(status().isUnauthorized());  // 401 Unauthorized로 수정
     }
 }

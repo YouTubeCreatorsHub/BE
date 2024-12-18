@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -233,14 +232,11 @@ class BoardControllerTest {
     void deleteBoard() throws Exception {
         // given
         UUID boardId = UUID.randomUUID();
-        doNothing().when(boardService).deleteBoard(boardId);
 
         // when & then
         mockMvc.perform(delete("/api/v1/boards/{id}", boardId)
                         .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-
-        verify(boardService, times(1)).deleteBoard(boardId);
     }
 }

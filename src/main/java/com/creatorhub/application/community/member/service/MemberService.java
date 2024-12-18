@@ -136,4 +136,10 @@ public class MemberService implements ManageMemberUseCase, GetMemberUseCase {
             throw new DuplicateMemberException("닉네임", command.getNickname());
         }
     }
+
+    public String getMemberEmail(UUID id) {
+        return memberRepository.findById(id)
+                .map(Member::getEmail)
+                .orElseThrow(() -> new MemberNotFoundException(id));
+    }
 }

@@ -5,6 +5,7 @@ import com.creatorhub.application.community.category.dto.CategoryCommand;
 import com.creatorhub.application.community.category.dto.CategoryResponse;
 import com.creatorhub.application.community.category.port.in.GetCategoryUseCase;
 import com.creatorhub.application.community.category.port.in.ManageCategoryUseCase;
+import com.creatorhub.application.community.category.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ import java.util.UUID;
 public class CategoryController {
     private final ManageCategoryUseCase manageCategoryUseCase;
     private final GetCategoryUseCase getCategoryUseCase;
+    private final CategoryService categoryService;
 
     @Operation(summary = "카테고리 생성", description = "새로운 카테고리를 생성합니다. 관리자 권한이 필요합니다.")
     @PostMapping
@@ -44,6 +46,24 @@ public class CategoryController {
     public ApiResponse<List<CategoryResponse>> getCategoriesByBoard(
             @PathVariable UUID boardId) {
         return ApiResponse.success(getCategoryUseCase.getCategoriesByBoardId(boardId));
+    }
+
+    @Operation(summary = "카테고리 수정", description = "카테고리 정보를 수정합니다. 관리자 권한이 필요합니다.")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<CategoryResponse> updateCategory(
+            @PathVariable UUID id,
+            @Valid @RequestBody CategoryCommand.Update command) {
+        command.setId(id);
+        return ApiResponse.success(manageCategoryUseCase.updateCategory(command));
+    }
+
+    @Operation(summary = "카테고리 삭제", description = "카테고리를 삭제합니다. 관리자 권한이 필요합니다.")
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteCategory(@PathVariable UUID id) {
+        categoryService.deleteCategory(id);
     }
 
     // ... 추가 API 엔드포인트

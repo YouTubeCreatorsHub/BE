@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.stream.Collectors;
 
@@ -66,5 +67,15 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
         return new ResponseEntity<>(ApiResponse.error(errorResponse), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException ex) {
+        log.error("Access Denied Exception: {}", ex.getMessage(), ex);
+        ErrorResponse errorResponse = ErrorResponse.of(
+                ErrorCode.FORBIDDEN,
+                "접근 권한이 없습니다."
+        );
+        return new ResponseEntity<>(ApiResponse.error(errorResponse), HttpStatus.FORBIDDEN);
     }
 }

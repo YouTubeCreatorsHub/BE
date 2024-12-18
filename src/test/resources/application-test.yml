@@ -20,7 +20,7 @@ spring:
 
   security:
     jwt:
-      secret-key: test-jwt-secret-key
+      secret-key: 7134743777217A25432A462D4A614E645267556B58703272357538782F413F4428472B4B6250655368566D597133743677397A244326452948404D635166546A
       expiration: 3600000
       refresh-token:
         expiration: 86400000
@@ -36,6 +36,7 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

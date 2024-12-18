@@ -93,9 +93,5 @@ z
 Jsrc/main/java/com/creatorhub/presentation/resource/ResourceController.java,4\1\412320d7725e72d9fb87e324672fdc2deb1bb790
 {
 Ksrc/main/java/com/creatorhub/application/common/response/ErrorResponse.java,1\7\1790b3c123697cf56fc69b3179b2f5f843339df6
-‚
-Rsrc/main/java/com/creatorhub/presentation/common/error/GlobalExceptionHandler.java,1\5\15cf17a97362a663f3321026ccaa001919e64d50
 r
 Bsrc/main/java/com/creatorhub/infrastructure/cache/CacheConfig.java,e\0\e03b9ca985234328630ae795ffcad0a898102120
-†
-Vsrc/test/java/com/creatorhub/presentation/common/error/GlobalExceptionHandlerTest.java,6\8\686cad44c8e1990ce2369ded2fc25758fd24524e
