@@ -1,25 +1,33 @@
 version: 0.0
 os: linux
+
+# 파일 복사 설정
 files:
   - source: /
     destination: /home/ec2-user/app/backend
     overwrite: yes
+
+# 파일 권한 설정
 permissions:
   - object: /home/ec2-user/app/backend/
     pattern: "**"
     owner: ec2-user
     group: ec2-user
     mode: 755
+
+# 환경 변수 설정 (Spring Cloud AWS 형식으로 변경)
 environment:
   variables:
-    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-    AWS_REGION: "ap-northeast-2"
-    AWS_STACK_AUTO: "false"
-    JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-    JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
-    JWT_REFRESH_EXPIRATION: ${{ secrets.JWT_REFRESH_EXPIRATION }}
+    cloud.aws.credentials.access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    cloud.aws.credentials.secret-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    cloud.aws.s3.bucket: ${{ secrets.AWS_S3_BUCKET }}
+    cloud.aws.region.static: "ap-northeast-2"
+    cloud.aws.stack.auto: "false"
+    spring.security.jwt.secret-key: ${{ secrets.JWT_SECRET_KEY }}
+    spring.security.jwt.expiration: ${{ secrets.JWT_EXPIRATION }}
+    spring.security.jwt.refresh-token.expiration: ${{ secrets.JWT_REFRESH_EXPIRATION }}
+
+# 배포 단계별 실행 스크립트 설정
 hooks:
   BeforeInstall:
     - location: scripts/before_install.sh
