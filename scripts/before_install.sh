@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# 백엔드 전용 디렉토리 생성
+# 기존 디렉토리 삭제 후 새로 생성
+rm -rf /home/ec2-user/app/backend
 mkdir -p /home/ec2-user/app/backend
 
 # 권한 설정
