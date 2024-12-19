@@ -1,8 +1,6 @@
 package com.creatorhub.platform.calendar.adapter.out.persistence;
 
-import com.creatorhub.platform.calendar.domain.entity.Calendar;
 import com.creatorhub.platform.calendar.domain.vo.CalendarId;
-import com.creatorhub.platform.calendar.domain.vo.CalendarPermission;
 import com.creatorhub.platform.calendar.domain.vo.CalendarTitle;
 import com.creatorhub.platform.calendar.domain.vo.UserId;
 import jakarta.persistence.*;

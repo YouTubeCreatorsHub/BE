@@ -4,8 +4,6 @@ import com.creatorhub.platform.calendar.domain.vo.*;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "calendar_events")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
