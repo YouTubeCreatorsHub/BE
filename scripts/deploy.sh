@@ -7,6 +7,18 @@ mkdir -p /home/ec2-user/app/backend
 # 배포 시작 시간 기록
 echo "> 배포 시작 : $(date +%c)" >> $DEPLOY_LOG
 
+# AWS 자격증명 설정 확인
+echo "> Checking AWS credentials..." >> $DEPLOY_LOG
+if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+    echo "> AWS credentials are not set" >> $DEPLOY_LOG
+    exit 1
+fi
+
+# 환경 변수 명시적 설정
+export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+export AWS_REGION=ap-northeast-2
+
 # JAR 파일 찾기 (plain JAR 제외)
 JAR_NAME=$(ls -tr /home/ec2-user/app/backend/build/libs/*[!plain].jar | tail -n 1)
 echo "> JAR Name: $JAR_NAME" >> $DEPLOY_LOG
