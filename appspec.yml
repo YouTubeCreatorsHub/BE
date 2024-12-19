@@ -1,11 +1,12 @@
 version: 0.0
 os: linux
 
-# 파일 복사 설정
+# 파일 복사 설정 - 기존 파일 덮어쓰기 동작 명시
 files:
   - source: /
     destination: /home/ec2-user/app/backend
     overwrite: yes
+    file_exists_behavior: OVERWRITE  # 파일이 이미 존재할 경우 덮어쓰기
 
 # 파일 권한 설정
 permissions:
@@ -15,22 +16,22 @@ permissions:
     group: ec2-user
     mode: 755
 
-# 환경 변수 설정 (Spring Cloud AWS 형식으로 변경)
+# 환경 변수 설정 (AWS SDK 표준 형식)
 environment:
   variables:
-    # AWS S3 관련 설정
-    cloud.aws.credentials.access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}  # AWS 접근 키
-    cloud.aws.credentials.secret-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # AWS 시크릿 키
-    cloud.aws.s3.bucket: ${{ secrets.AWS_S3_BUCKET }}  # S3 버킷 이름
-    cloud.aws.region.static: "ap-northeast-2"  # AWS 리전 설정
-    cloud.aws.stack.auto: "false"  # AWS CloudFormation 자동 스택 생성 비활성화
+    # AWS 자격증명 설정
+    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+    AWS_REGION: "ap-northeast-2"
+    AWS_STACK_AUTO: "false"
 
-    # JWT 관련 설정
-    spring.security.jwt.secret-key: ${{ secrets.JWT_SECRET_KEY }}  # JWT 시크릿 키
-    spring.security.jwt.expiration: ${{ secrets.JWT_EXPIRATION }}  # JWT 만료 시간
-    spring.security.jwt.refresh-token.expiration: ${{ secrets.JWT_REFRESH_EXPIRATION }}  # JWT 리프레시 토큰 만료 시간
+    # JWT 설정
+    JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+    JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
+    JWT_REFRESH_EXPIRATION: ${{ secrets.JWT_REFRESH_EXPIRATION }}
 
-# 배포 단계별 실행 스크립트 설정
+# 배포 수명주기 훅 설정
 hooks:
   BeforeInstall:
     - location: scripts/before_install.sh
