@@ -7,6 +7,12 @@ mkdir -p /home/ec2-user/app/backend
 # 배포 시작 시간 기록
 echo "> 배포 시작 : $(date +%c)" >> $DEPLOY_LOG
 
+# 디버그: AWS 자격 증명 및 Parameter Store 접근 확인
+echo "> Debug - AWS Caller Identity:" >> $DEPLOY_LOG
+aws sts get-caller-identity >> $DEPLOY_LOG 2>&1
+echo "> Debug - Parameter Store Access Test:" >> $DEPLOY_LOG
+aws ssm get-parameter --name /development/AWS_ACCESS_KEY_ID --with-decryption >> $DEPLOY_LOG 2>&1
+
 # AWS Systems Manager에서 파라미터 가져오기
 export AWS_ACCESS_KEY_ID=$(aws ssm get-parameter --name /development/AWS_ACCESS_KEY_ID --with-decryption --query Parameter.Value --output text)
 export AWS_SECRET_ACCESS_KEY=$(aws ssm get-parameter --name /development/AWS_SECRET_ACCESS_KEY --with-decryption --query Parameter.Value --output text)
