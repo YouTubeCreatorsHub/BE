@@ -19,17 +19,14 @@ permissions:
 # 환경 변수 설정 (AWS SDK 표준 형식)
 environment:
   variables:
-    # AWS 자격증명 설정
-    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+    AWS_S3_BUCKET: ${AWS_S3_BUCKET}
     AWS_REGION: "ap-northeast-2"
     AWS_STACK_AUTO: "false"
-
-    # JWT 설정
-    JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-    JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
-    JWT_REFRESH_EXPIRATION: ${{ secrets.JWT_REFRESH_EXPIRATION }}
+    JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+    JWT_EXPIRATION: ${JWT_EXPIRATION}
+    JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}
 
 # 배포 수명주기 훅 설정
 hooks:
@@ -39,6 +36,6 @@ hooks:
       runas: ec2-user
   ApplicationStart:
     - location: scripts/deploy.sh
-      timeout: 60
+      timeout: 300
       runas: ec2-user
 
