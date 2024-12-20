@@ -1,40 +1,44 @@
 version: 0.0
 os: linux
 
-# 파일 복사 설정 - 기존 파일 덮어쓰기 동작 명시
+# 파일 복사 설정
 files:
-  - source: /
-    destination: /home/ec2-user/app/backend
-    overwrite: yes
-    file_exists_behavior: OVERWRITE  # 파일이 이미 존재할 경우 덮어쓰기
+  - source: /  # 소스 디렉토리
+    destination: /home/ec2-user/app/backend  # 대상 디렉토리
+    overwrite: yes  # 기존 파일 덮어쓰기
+    file_exists_behavior: OVERWRITE  # 파일이 존재할 경우 덮어쓰기
 
 # 파일 권한 설정
 permissions:
-  - object: /home/ec2-user/app/backend/
-    pattern: "**"
-    owner: ec2-user
-    group: ec2-user
-    mode: 755
+  - object: /home/ec2-user/app/backend/  # 권한 설정할 디렉토리
+    pattern: "**"  # 모든 파일에 적용
+    owner: ec2-user  # 소유자
+    group: ec2-user  # 그룹
+    mode: 755  # 권한 설정
 
-# 환경 변수 설정 (AWS SDK 표준 형식)
+# 환경 변수 설정
 environment:
   variables:
-    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-    AWS_S3_BUCKET: ${AWS_S3_BUCKET}
-    AWS_REGION: "ap-northeast-2"
-    AWS_STACK_AUTO: "false"
-    JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-    JWT_EXPIRATION: ${JWT_EXPIRATION}
-    JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}
+    # AWS 관련 설정
+    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}  # AWS 액세스 키
+    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}  # AWS 시크릿 키
+    AWS_S3_BUCKET: ${AWS_S3_BUCKET}  # S3 버킷 이름
+    AWS_REGION: "ap-northeast-2"  # AWS 리전
+    AWS_STACK_AUTO: "false"  # AWS 스택 자동 생성 비활성화
+
+    # JWT 관련 설정
+    JWT_SECRET_KEY: ${JWT_SECRET_KEY}  # JWT 시크릿 키
+    JWT_EXPIRATION: ${JWT_EXPIRATION}  # JWT 만료 시간
+    JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}  # JWT 리프레시 토큰 만료 시간
 
 # 배포 수명주기 훅 설정
 hooks:
-  BeforeInstall:
+  BeforeInstall:  # 설치 전 실행할 스크립트
     - location: scripts/before_install.sh
-      timeout: 300
-      runas: ec2-user
-  ApplicationStart:
+      timeout: 300  # 타임아웃 설정 (초)
+      runas: ec2-user  # 실행 사용자
+  ApplicationStart:  # 애플리케이션 시작 시 실행할 스크립트
     - location: scripts/deploy.sh
-      timeout: 300
-      runas: ec2-user
+      timeout: 300  # 타임아웃 설정 (초)
+      runas: ec2-user  # 실행 사용자
+      
