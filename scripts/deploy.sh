@@ -7,17 +7,20 @@ mkdir -p /home/ec2-user/app/backend
 # 배포 시작 시간 기록
 echo "> 배포 시작 : $(date +%c)" >> $DEPLOY_LOG
 
-# AWS 자격증명 설정 확인
-echo "> Checking AWS credentials..." >> $DEPLOY_LOG
-if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
-    echo "> AWS credentials are not set" >> $DEPLOY_LOG
-    exit 1
-fi
+# 현재 디렉토리 및 파일 상태 확인
+echo "> Current directory: $(pwd)" >> $DEPLOY_LOG
+echo "> Directory contents:" >> $DEPLOY_LOG
+ls -la /home/ec2-user/app/backend >> $DEPLOY_LOG
 
-# 환경 변수 명시적 설정
-export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-export AWS_REGION=ap-northeast-2
+# AWS 자격증명 상태 확인
+echo "> AWS Credentials Status:" >> $DEPLOY_LOG
+echo "> AWS_ACCESS_KEY_ID exists: $([ ! -z "$AWS_ACCESS_KEY_ID" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
+echo "> AWS_SECRET_ACCESS_KEY exists: $([ ! -z "$AWS_SECRET_ACCESS_KEY" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
+echo "> AWS_REGION: ${AWS_REGION}" >> $DEPLOY_LOG
+
+# JAR 파일 찾기 전 디렉토리 확인
+echo "> Checking build/libs directory:" >> $DEPLOY_LOG
+ls -la /home/ec2-user/app/backend/build/libs >> $DEPLOY_LOG 2>&1
 
 # JAR 파일 찾기 (plain JAR 제외)
 JAR_NAME=$(ls -tr /home/ec2-user/app/backend/build/libs/*[!plain].jar | tail -n 1)
@@ -34,7 +37,11 @@ else
   sleep 5
 fi
 
-# JAR 파일 실행 (Spring이 인식할 수 있는 형식으로 환경 변수 전달)
+# JAR 실행 전 환경변수 상태 확인
+echo "> Environment variables before running JAR:" >> $DEPLOY_LOG
+env | grep -E "AWS_|JWT_" >> $DEPLOY_LOG
+
+# JAR 파일 실행
 echo "> $JAR_NAME 배포" >> $DEPLOY_LOG
 nohup java -jar \
     -Dcloud.aws.credentials.access-key=${AWS_ACCESS_KEY_ID} \
@@ -48,7 +55,9 @@ nohup java -jar \
     -Dspring.profiles.active=prod \
     $JAR_NAME > /home/ec2-user/app/backend/nohup.out 2>&1 &
 
-# 실행 확인
+# 실행 후 프로세스 상태 확인
 sleep 3
 CURRENT_PID=$(pgrep -f ${JAR_NAME})
+echo "> Process status after deployment:" >> $DEPLOY_LOG
+ps -ef | grep java >> $DEPLOY_LOG
 echo "> 배포 완료 : $CURRENT_PID" >> $DEPLOY_LOG
