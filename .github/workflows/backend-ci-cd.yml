@@ -14,8 +14,8 @@ on:
 
 jobs:
   build:  # 빌드 작업 정의
-    runs-on: ubuntu-latest  # Ubuntu 최신 버전에서 실행
-    environment: development  # development 환경 사용 (시크릿 접근용)
+    runs-on: ubuntu-22.04  # Ubuntu 버전 명시적 지정
+    environment: development  # development 환경 사용
     defaults:
       run:
         working-directory: .  # 작업 디렉토리 설정
@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3  # 소스 코드 체크아웃
 
-      # AWS 자격증명 설정을 먼저 수행
+      # AWS 자격증명 설정
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -79,8 +79,8 @@ jobs:
   deploy:  # 배포 작업 정의
     needs: build  # build 작업 완료 후 실행
     if: github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
-    runs-on: ubuntu-latest
-    environment: development  # development 환경의 시크릿 사용
+    runs-on: ubuntu-22.04
+    environment: development
 
     steps:
       - uses: actions/checkout@v3  # 소스 코드 체크아웃
@@ -94,12 +94,23 @@ jobs:
           name: jar-file
           path: build/libs
 
-      - name: Configure AWS credentials  # AWS 자격증명 설정
+      # AWS 자격증명 설정
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
+
+      # Parameter Store에 시크릿 저장 (deploy job에도 추가)
+      - name: Store secrets in Parameter Store
+        run: |
+          aws ssm put-parameter --name /development/AWS_ACCESS_KEY_ID --value ${{ secrets.AWS_ACCESS_KEY_ID }} --type SecureString --overwrite
+          aws ssm put-parameter --name /development/AWS_SECRET_ACCESS_KEY --value ${{ secrets.AWS_SECRET_ACCESS_KEY }} --type SecureString --overwrite
+          aws ssm put-parameter --name /development/AWS_S3_BUCKET --value ${{ secrets.AWS_S3_BUCKET }} --type SecureString --overwrite
+          aws ssm put-parameter --name /development/JWT_SECRET_KEY --value ${{ secrets.JWT_SECRET_KEY }} --type SecureString --overwrite
+          aws ssm put-parameter --name /development/JWT_EXPIRATION --value ${{ secrets.JWT_EXPIRATION }} --type SecureString --overwrite
+          aws ssm put-parameter --name /development/JWT_REFRESH_EXPIRATION --value ${{ secrets.JWT_REFRESH_EXPIRATION }} --type SecureString --overwrite
 
       - name: Upload to S3  # S3에 애플리케이션 업로드
         run: |
