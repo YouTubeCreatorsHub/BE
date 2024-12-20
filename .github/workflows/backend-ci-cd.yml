@@ -40,55 +40,58 @@ jobs:
           aws ssm put-parameter --name /development/JWT_SECRET_KEY --value ${{ secrets.JWT_SECRET_KEY }} --type SecureString --overwrite
           aws ssm put-parameter --name /development/JWT_EXPIRATION --value ${{ secrets.JWT_EXPIRATION }} --type SecureString --overwrite
           aws ssm put-parameter --name /development/JWT_REFRESH_EXPIRATION --value ${{ secrets.JWT_REFRESH_EXPIRATION }} --type SecureString --overwrite
+          aws ssm put-parameter --name /development/SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE --value "10MB" --type String --overwrite
+          aws ssm put-parameter --name /development/SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE --value "10MB" --type String --overwrite
 
-      - name: Validate Gradle wrapper  # Gradle Wrapper 유효성 검사
+      # Gradle 빌드 관련 단계들...
+      - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Set up JDK 17  # JDK 17 설정
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'zulu'  # Zulu OpenJDK 사용
-          cache: 'gradle'  # Gradle 캐싱으로 빌드 속도 향상
+          distribution: 'zulu'
+          cache: 'gradle'
 
-      - name: Grant execute permission for gradlew  # gradlew 실행 권한 부여
+      - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run tests  # 테스트 실행
+      - name: Run tests
         env:
-          SPRING_PROFILES_ACTIVE: test  # 테스트 프로필 활성화
+          SPRING_PROFILES_ACTIVE: test
         run: ./gradlew test --stacktrace
 
-      - name: Build with Gradle  # Gradle 빌드 실행
-        if: success()  # 이전 단계 성공 시에만 실행
-        run: ./gradlew build -x test  # 테스트 제외하고 빌드
+      - name: Build with Gradle
+        if: success()
+        run: ./gradlew build -x test
 
-      - name: Upload JAR  # JAR 파일을 아티팩트로 저장
+      - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
           name: jar-file
           path: build/libs/*.jar
 
-      - name: Upload test results  # 테스트 결과 업로드
-        if: always()  # 항상 실행
+      - name: Upload test results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: build/reports/tests/test
 
   deploy:  # 배포 작업 정의
-    needs: build  # build 작업 완료 후 실행
+    needs: build
     if: github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
     runs-on: ubuntu-22.04
     environment: development
 
     steps:
-      - uses: actions/checkout@v3  # 소스 코드 체크아웃
+      - uses: actions/checkout@v3
 
-      - name: Create build directory  # build/libs 디렉토리 생성
+      - name: Create build directory
         run: mkdir -p build/libs
 
-      - name: Download JAR  # build job에서 생성된 JAR 파일 다운로드
+      - name: Download JAR
         uses: actions/download-artifact@v4
         with:
           name: jar-file
@@ -102,7 +105,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      # Parameter Store에 시크릿 저장 (deploy job에도 추가)
+      # Parameter Store에 시크릿 저장 (파일 업로드 설정 포함)
       - name: Store secrets in Parameter Store
         run: |
           aws ssm put-parameter --name /development/AWS_ACCESS_KEY_ID --value ${{ secrets.AWS_ACCESS_KEY_ID }} --type SecureString --overwrite
@@ -111,15 +114,17 @@ jobs:
           aws ssm put-parameter --name /development/JWT_SECRET_KEY --value ${{ secrets.JWT_SECRET_KEY }} --type SecureString --overwrite
           aws ssm put-parameter --name /development/JWT_EXPIRATION --value ${{ secrets.JWT_EXPIRATION }} --type SecureString --overwrite
           aws ssm put-parameter --name /development/JWT_REFRESH_EXPIRATION --value ${{ secrets.JWT_REFRESH_EXPIRATION }} --type SecureString --overwrite
+          aws ssm put-parameter --name /development/SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE --value "10MB" --type String --overwrite
+          aws ssm put-parameter --name /development/SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE --value "10MB" --type String --overwrite
 
-      - name: Upload to S3  # S3에 애플리케이션 업로드
+      - name: Upload to S3
         run: |
           aws deploy push \
             --application-name youtube-app \
             --s3-location s3://youtube-deploy/youtube-app.zip \
             --source .
 
-      - name: Deploy to EC2  # EC2에 배포
+      - name: Deploy to EC2
         run: |
           aws deploy create-deployment \
             --application-name youtube-app \
