@@ -23,6 +23,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3  # 소스 코드 체크아웃
 
+      # AWS 자격증명 설정을 먼저 수행
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
       # Parameter Store에 시크릿 저장
       - name: Store secrets in Parameter Store
         run: |
@@ -75,32 +83,32 @@ jobs:
     environment: development  # development 환경의 시크릿 사용
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3  # 소스 코드 체크아웃
 
-      - name: Create build directory
+      - name: Create build directory  # build/libs 디렉토리 생성
         run: mkdir -p build/libs
 
-      - name: Download JAR
+      - name: Download JAR  # build job에서 생성된 JAR 파일 다운로드
         uses: actions/download-artifact@v4
         with:
           name: jar-file
           path: build/libs
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials  # AWS 자격증명 설정
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Upload to S3
+      - name: Upload to S3  # S3에 애플리케이션 업로드
         run: |
           aws deploy push \
             --application-name youtube-app \
             --s3-location s3://youtube-deploy/youtube-app.zip \
             --source .
 
-      - name: Deploy to EC2
+      - name: Deploy to EC2  # EC2에 배포
         run: |
           aws deploy create-deployment \
             --application-name youtube-app \
