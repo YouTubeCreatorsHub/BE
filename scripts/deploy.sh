@@ -18,13 +18,21 @@ aws ssm get-parameter --name /development/AWS_SECRET_ACCESS_KEY --with-decryptio
 echo "> Debug - AWS_SECRET_ACCESS_KEY query output:" >> $DEPLOY_LOG
 aws ssm get-parameter --name /development/AWS_SECRET_ACCESS_KEY --with-decryption --query Parameter.Value --output text >> $DEPLOY_LOG 2>&1
 
-# AWS Systems Manager에서 파라미터 가져오기
-export AWS_ACCESS_KEY_ID=$(aws ssm get-parameter --name /development/AWS_ACCESS_KEY_ID --with-decryption --query Parameter.Value --output text)
-export AWS_SECRET_ACCESS_KEY=$(aws ssm get-parameter --name /development/AWS_SECRET_ACCESS_KEY --with-decryption --query Parameter.Value --output text)
-export AWS_S3_BUCKET=$(aws ssm get-parameter --name /development/AWS_S3_BUCKET --with-decryption --query Parameter.Value --output text)
-export JWT_SECRET_KEY=$(aws ssm get-parameter --name /development/JWT_SECRET_KEY --with-decryption --query Parameter.Value --output text)
-export JWT_EXPIRATION=$(aws ssm get-parameter --name /development/JWT_EXPIRATION --with-decryption --query Parameter.Value --output text)
-export JWT_REFRESH_EXPIRATION=$(aws ssm get-parameter --name /development/JWT_REFRESH_EXPIRATION --with-decryption --query Parameter.Value --output text)
+# AWS Systems Manager에서 파라미터 가져오기 (임시 변수 사용)
+ACCESS_KEY=$(aws ssm get-parameter --name /development/AWS_ACCESS_KEY_ID --with-decryption --query Parameter.Value --output text)
+SECRET_KEY=$(aws ssm get-parameter --name /development/AWS_SECRET_ACCESS_KEY --with-decryption --query Parameter.Value --output text)
+S3_BUCKET=$(aws ssm get-parameter --name /development/AWS_S3_BUCKET --with-decryption --query Parameter.Value --output text)
+JWT_KEY=$(aws ssm get-parameter --name /development/JWT_SECRET_KEY --with-decryption --query Parameter.Value --output text)
+JWT_EXP=$(aws ssm get-parameter --name /development/JWT_EXPIRATION --with-decryption --query Parameter.Value --output text)
+JWT_REFRESH_EXP=$(aws ssm get-parameter --name /development/JWT_REFRESH_EXPIRATION --with-decryption --query Parameter.Value --output text)
+
+# 환경 변수로 설정
+export AWS_ACCESS_KEY_ID="${ACCESS_KEY}"
+export AWS_SECRET_ACCESS_KEY="${SECRET_KEY}"
+export AWS_S3_BUCKET="${S3_BUCKET}"
+export JWT_SECRET_KEY="${JWT_KEY}"
+export JWT_EXPIRATION="${JWT_EXP}"
+export JWT_REFRESH_EXPIRATION="${JWT_REFRESH_EXP}"
 
 # 환경 변수 존재 여부 확인 (값은 출력하지 않음)
 echo "> Environment variables check:" >> $DEPLOY_LOG
