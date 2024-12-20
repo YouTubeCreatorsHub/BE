@@ -15,9 +15,14 @@ export JWT_SECRET_KEY=$(aws ssm get-parameter --name /development/JWT_SECRET_KEY
 export JWT_EXPIRATION=$(aws ssm get-parameter --name /development/JWT_EXPIRATION --with-decryption --query Parameter.Value --output text)
 export JWT_REFRESH_EXPIRATION=$(aws ssm get-parameter --name /development/JWT_REFRESH_EXPIRATION --with-decryption --query Parameter.Value --output text)
 
-# 환경 변수 상태 확인
+# 환경 변수 존재 여부 확인 (값은 출력하지 않음)
 echo "> Environment variables check:" >> $DEPLOY_LOG
-env | grep -E "AWS_|JWT_" >> $DEPLOY_LOG
+echo "AWS_ACCESS_KEY_ID exists: $([ ! -z "$AWS_ACCESS_KEY_ID" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
+echo "AWS_SECRET_ACCESS_KEY exists: $([ ! -z "$AWS_SECRET_ACCESS_KEY" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
+echo "AWS_S3_BUCKET exists: $([ ! -z "$AWS_S3_BUCKET" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
+echo "JWT_SECRET_KEY exists: $([ ! -z "$JWT_SECRET_KEY" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
+echo "JWT_EXPIRATION exists: $([ ! -z "$JWT_EXPIRATION" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
+echo "JWT_REFRESH_EXPIRATION exists: $([ ! -z "$JWT_REFRESH_EXPIRATION" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
 
 # JAR 파일 찾기
 JAR_NAME=$(ls -tr /home/ec2-user/app/backend/build/libs/*[!plain].jar | tail -n 1)
