@@ -14,12 +14,12 @@ echo "> Debug - Parameter Store Access Test:" >> $DEPLOY_LOG
 aws ssm get-parameter --name /development/AWS_ACCESS_KEY_ID --with-decryption >> $DEPLOY_LOG 2>&1
 
 # AWS Systems Manager에서 파라미터 가져오기
-export AWS_ACCESS_KEY_ID=$(aws ssm get-parameter --name /development/AWS_ACCESS_KEY_ID --with-decryption --query Parameter.Value --output text)
-export AWS_SECRET_ACCESS_KEY=$(aws ssm get-parameter --name /development/AWS_SECRET_ACCESS_KEY --with-decryption --query Parameter.Value --output text)
-export AWS_S3_BUCKET=$(aws ssm get-parameter --name /development/AWS_S3_BUCKET --with-decryption --query Parameter.Value --output text)
-export JWT_SECRET_KEY=$(aws ssm get-parameter --name /development/JWT_SECRET_KEY --with-decryption --query Parameter.Value --output text)
-export JWT_EXPIRATION=$(aws ssm get-parameter --name /development/JWT_EXPIRATION --with-decryption --query Parameter.Value --output text)
-export JWT_REFRESH_EXPIRATION=$(aws ssm get-parameter --name /development/JWT_REFRESH_EXPIRATION --with-decryption --query Parameter.Value --output text)
+export AWS_ACCESS_KEY_ID=$(aws ssm get-parameter --name /development/AWS_ACCESS_KEY_ID --with-decryption | jq -r '.Parameter.Value')
+export AWS_SECRET_ACCESS_KEY=$(aws ssm get-parameter --name /development/AWS_SECRET_ACCESS_KEY --with-decryption | jq -r '.Parameter.Value')
+export AWS_S3_BUCKET=$(aws ssm get-parameter --name /development/AWS_S3_BUCKET --with-decryption | jq -r '.Parameter.Value')
+export JWT_SECRET_KEY=$(aws ssm get-parameter --name /development/JWT_SECRET_KEY --with-decryption | jq -r '.Parameter.Value')
+export JWT_EXPIRATION=$(aws ssm get-parameter --name /development/JWT_EXPIRATION --with-decryption | jq -r '.Parameter.Value')
+export JWT_REFRESH_EXPIRATION=$(aws ssm get-parameter --name /development/JWT_REFRESH_EXPIRATION --with-decryption | jq -r '.Parameter.Value')
 
 # 환경 변수 존재 여부 확인 (값은 출력하지 않음)
 echo "> Environment variables check:" >> $DEPLOY_LOG
