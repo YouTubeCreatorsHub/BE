@@ -25,6 +25,8 @@ S3_BUCKET=$(aws ssm get-parameter --name /development/AWS_S3_BUCKET --with-decry
 JWT_KEY=$(aws ssm get-parameter --name /development/JWT_SECRET_KEY --with-decryption --query Parameter.Value --output text)
 JWT_EXP=$(aws ssm get-parameter --name /development/JWT_EXPIRATION --with-decryption --query Parameter.Value --output text)
 JWT_REFRESH_EXP=$(aws ssm get-parameter --name /development/JWT_REFRESH_EXPIRATION --with-decryption --query Parameter.Value --output text)
+MULTIPART_MAX_FILE_SIZE=$(aws ssm get-parameter --name /development/SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE --query Parameter.Value --output text)
+MULTIPART_MAX_REQUEST_SIZE=$(aws ssm get-parameter --name /development/SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE --query Parameter.Value --output text)
 
 # 환경 변수로 설정
 export AWS_ACCESS_KEY_ID="${ACCESS_KEY}"
@@ -33,6 +35,8 @@ export AWS_S3_BUCKET="${S3_BUCKET}"
 export JWT_SECRET_KEY="${JWT_KEY}"
 export JWT_EXPIRATION="${JWT_EXP}"
 export JWT_REFRESH_EXPIRATION="${JWT_REFRESH_EXP}"
+export SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE="${MULTIPART_MAX_FILE_SIZE}"
+export SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE="${MULTIPART_MAX_REQUEST_SIZE}"
 
 # 환경 변수 존재 여부 확인 (값은 출력하지 않음)
 echo "> Environment variables check:" >> $DEPLOY_LOG
@@ -42,6 +46,8 @@ echo "AWS_S3_BUCKET exists: $([ ! -z "$AWS_S3_BUCKET" ] && echo "Yes" || echo "N
 echo "JWT_SECRET_KEY exists: $([ ! -z "$JWT_SECRET_KEY" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
 echo "JWT_EXPIRATION exists: $([ ! -z "$JWT_EXPIRATION" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
 echo "JWT_REFRESH_EXPIRATION exists: $([ ! -z "$JWT_REFRESH_EXPIRATION" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
+echo "SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE exists: $([ ! -z "$SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
+echo "SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE exists: $([ ! -z "$SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE" ] && echo "Yes" || echo "No")" >> $DEPLOY_LOG
 
 # JAR 파일 찾기
 JAR_NAME=$(ls -tr /home/ec2-user/app/backend/build/libs/*[!plain].jar | tail -n 1)
@@ -58,8 +64,7 @@ else
   sleep 5
 fi
 
-# JAR 파일 실행
-echo "> $JAR_NAME 배포" >> $DEPLOY_LOG
+# JAR 파일 실행 부분도 수정
 nohup java -jar \
     -Dcloud.aws.credentials.access-key=${AWS_ACCESS_KEY_ID} \
     -Dcloud.aws.credentials.secret-key=${AWS_SECRET_ACCESS_KEY} \
@@ -69,6 +74,8 @@ nohup java -jar \
     -Dspring.security.jwt.secret-key=${JWT_SECRET_KEY} \
     -Dspring.security.jwt.expiration=${JWT_EXPIRATION} \
     -Dspring.security.jwt.refresh-token.expiration=${JWT_REFRESH_EXPIRATION} \
+    -Dspring.servlet.multipart.max-file-size=${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE} \
+    -Dspring.servlet.multipart.max-request-size=${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE} \
     -Dspring.profiles.active=prod \
     $JAR_NAME > /home/ec2-user/app/backend/nohup.out 2>&1 &
 
