@@ -41,3 +41,4 @@ hooks:
     - location: scripts/deploy.sh
       timeout: 300  # 타임아웃 설정 (초)
       runas: ec2-user  # 실행 사용자
+      
