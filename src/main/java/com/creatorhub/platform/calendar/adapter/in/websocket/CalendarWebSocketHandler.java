@@ -4,6 +4,7 @@ import com.creatorhub.platform.calendar.adapter.in.websocket.dto.WebSocketMessag
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -23,7 +24,7 @@ public class CalendarWebSocketHandler extends TextWebSocketHandler {
     private final Map<String, Set<WebSocketSession>> sessions = new ConcurrentHashMap<>();
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
+    public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         String calendarId = extractCalendarId(session);
         sessions.computeIfAbsent(calendarId, k -> ConcurrentHashMap.newKeySet()).add(session);
         log.info("WebSocket {} connection established for calendar: {}, total sessions: {}",
@@ -31,7 +32,7 @@ public class CalendarWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+    protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) {
         log.debug("Received message: {}", message.getPayload());
     }
 
@@ -66,7 +67,12 @@ public class CalendarWebSocketHandler extends TextWebSocketHandler {
     }
 
     private String extractCalendarId(WebSocketSession session) {
+        if (session.getUri() == null) {
+            throw new IllegalArgumentException("WebSocket URI cannot be null");
+        }
+
         String path = session.getUri().getPath();
+
         // URI 패턴이 "/ws/calendar/{calendarId}"라고 가정
         String[] pathParts = path.split("/");
         if (pathParts.length < 4) {
@@ -76,7 +82,7 @@ public class CalendarWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
         String calendarId = extractCalendarId(session);
         Set<WebSocketSession> calendarSessions = sessions.get(calendarId);
         if (calendarSessions != null) {
