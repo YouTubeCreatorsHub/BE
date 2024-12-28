@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Calendar 관련 테스트" tests="4" skipped="0" failures="0" errors="0" timestamp="2024-12-23T13:33:57" hostname="sinjiseobs-MacBook-Air.local" time="0.023">
+  <properties/>
+  <testcase name="소유자의 모든 Calendar를 조회할 수 있다" classname="com.creatorhub.platform.calendar.application.CalendarServiceTest$CalendarTest" time="0.006"/>
+  <testcase name="Calendar를 조회할 수 있다" classname="com.creatorhub.platform.calendar.application.CalendarServiceTest$CalendarTest" time="0.002"/>
+  <testcase name="canUpdateCalendarTitle()" classname="com.creatorhub.platform.calendar.application.CalendarServiceTest$CalendarTest" time="0.006"/>
+  <testcase name="Calendar를 생성할 수 있다" classname="com.creatorhub.platform.calendar.application.CalendarServiceTest$CalendarTest" time="0.005"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

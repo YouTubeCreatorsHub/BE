@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="연결 종료 테스트" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-12-23T13:33:57" hostname="sinjiseobs-MacBook-Air.local" time="0.039">
+  <properties/>
+  <testcase name="웹소켓 연결이 정상적으로 종료된다" classname="com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandlerTest$DisconnectionTest" time="0.039"/>
+  <system-out><![CDATA[22:33:57.107 [Test worker] INFO com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandler -- WebSocket connection established for calendar: 2dc12309-4dc4-477f-b634-c6ccd79bc3d8
+22:33:57.113 [Test worker] INFO com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandler -- WebSocket connection closed for calendar: 2dc12309-4dc4-477f-b634-c6ccd79bc3d8
+22:33:57.137 [Test worker] WARN com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandler -- No active session found for calendar: 2dc12309-4dc4-477f-b634-c6ccd79bc3d8
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="CalendarEvent 관련 테스트" tests="3" skipped="0" failures="0" errors="0" timestamp="2024-12-23T13:33:57" hostname="sinjiseobs-MacBook-Air.local" time="0.053">
+  <properties/>
+  <testcase name="Calendar에 Event를 추가할 수 있다" classname="com.creatorhub.platform.calendar.application.CalendarServiceTest$CalendarEventTest" time="0.042"/>
+  <testcase name="다른 사용자가 Calendar의 Event를 조회하려고 하면 예외가 발생한다" classname="com.creatorhub.platform.calendar.application.CalendarServiceTest$CalendarEventTest" time="0.003"/>
+  <testcase name="존재하지 않는 Event를 조회하려고 하면 예외가 발생한다" classname="com.creatorhub.platform.calendar.application.CalendarServiceTest$CalendarEventTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

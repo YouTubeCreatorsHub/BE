@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="WebSocket 연결 테스트" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-12-23T13:33:57" hostname="sinjiseobs-MacBook-Air.local" time="0.041">
+  <properties/>
+  <testcase name="잘못된 URI 형식으로 연결 시도시 예외가 발생한다" classname="com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandlerTest$ConnectionTest" time="0.038"/>
+  <testcase name="웹소켓 연결이 성공적으로 수립된다" classname="com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandlerTest$ConnectionTest" time="0.002"/>
+  <system-out><![CDATA[22:33:57.209 [Test worker] INFO com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandler -- WebSocket connection established for calendar: 75a9fc12-25b3-46be-89f4-61a1232a3182
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

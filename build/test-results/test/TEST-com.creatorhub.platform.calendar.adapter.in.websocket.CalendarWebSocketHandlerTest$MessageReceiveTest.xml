@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="메시지 수신 테스트" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-12-23T13:33:56" hostname="sinjiseobs-MacBook-Air.local" time="0.854">
+  <properties/>
+  <testcase name="텍스트 메시지가 정상적으로 수신된다" classname="com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandlerTest$MessageReceiveTest" time="0.854"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

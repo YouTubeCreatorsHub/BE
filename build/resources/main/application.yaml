@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: platform
+  datasource:
+    url: jdbc:postgresql://youtube-creators-hub.cteye6wsa1hc.us-east-1.rds.amazonaws.com:5432/postgres
+    username: postgres
+    password: Youtube!
+    driver-class-name: org.postgresql.Driver
+  jpa:
+#    hibernate:
+#      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
