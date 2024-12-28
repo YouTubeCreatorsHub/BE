@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="권한 관리 테스트" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-12-23T13:33:57" hostname="sinjiseobs-MacBook-Air.local" time="0.005">
-  <properties/>
-  <testcase name="일반 사용자는 권한을 부여할 수 없다" classname="com.creatorhub.platform.calendar.domain.entity.CalendarTest$PermissionManagementTest" time="0.002"/>
-  <testcase name="소유자는 다른 사용자에게 권한을 부여할 수 있다" classname="com.creatorhub.platform.calendar.domain.entity.CalendarTest$PermissionManagementTest" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

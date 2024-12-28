@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="Value Object 테스트" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-12-23T13:33:57" hostname="sinjiseobs-MacBook-Air.local" time="0.003">
-  <properties/>
-  <testcase name="이벤트 시간 범위는 유효해야 한다" classname="com.creatorhub.platform.calendar.domain.entity.CalendarTest$ValueObjectTest" time="0.001"/>
-  <testcase name="캘린더 제목은 빈 값이 될 수 없다" classname="com.creatorhub.platform.calendar.domain.entity.CalendarTest$ValueObjectTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

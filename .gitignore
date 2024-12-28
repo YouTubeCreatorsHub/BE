@@ -1,0 +1,13 @@
+# Java 빌드 파일
+*.class
+*.jar
+/target/
+/build/
+/out/
+
+# IDE 관련 파일
+.idea/
+*.iml
+.vscode/
+.project
+.classpath

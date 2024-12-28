@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="이벤트 수정 테스트" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-12-23T13:33:57" hostname="sinjiseobs-MacBook-Air.local" time="0.004">
-  <properties/>
-  <testcase name="존재하지 않는 이벤트는 수정할 수 없다" classname="com.creatorhub.platform.calendar.domain.entity.CalendarTest$EventUpdateTest" time="0.001"/>
-  <testcase name="소유자는 이벤트를 수정할 수 있다" classname="com.creatorhub.platform.calendar.domain.entity.CalendarTest$EventUpdateTest" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

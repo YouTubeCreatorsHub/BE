@@ -1,8 +1,0 @@
-Æ22:33:57.107 [Test worker] INFO com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandler -- WebSocket connection established for calendar: 2dc12309-4dc4-477f-b634-c6ccd79bc3d8
-Á22:33:57.113 [Test worker] INFO com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandler -- WebSocket connection closed for calendar: 2dc12309-4dc4-477f-b634-c6ccd79bc3d8
-½22:33:57.137 [Test worker] WARN com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandler -- No active session found for calendar: 2dc12309-4dc4-477f-b634-c6ccd79bc3d8
-Æ22:33:57.141 [Test worker] INFO com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandler -- WebSocket connection established for calendar: dbd054ae-e06c-408d-a165-8bceefbaef6f
-½22:33:57.142 [Test worker] WARN com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandler -- No active session found for calendar: dbd054ae-e06c-408d-a165-8bceefbaef6f
-Æ22:33:57.145 [Test worker] INFO com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandler -- WebSocket connection established for calendar: 1333b37f-0dd9-4f37-b225-3e3d457674b4
-	
-Æ22:33:57.209 [Test worker] INFO com.creatorhub.platform.calendar.adapter.in.websocket.CalendarWebSocketHandler -- WebSocket connection established for calendar: 75a9fc12-25b3-46be-89f4-61a1232a3182
