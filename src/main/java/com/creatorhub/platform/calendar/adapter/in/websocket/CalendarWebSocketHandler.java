@@ -1,6 +1,6 @@
 package com.creatorhub.platform.calendar.adapter.in.websocket;
 
-import com.creatorhub.platform.calendar.adapter.in.web.dto.CalendarEventResponse;
+import com.creatorhub.platform.calendar.adapter.in.websocket.dto.WebSocketMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -19,30 +20,48 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class CalendarWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
-    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    private final Map<String, Set<WebSocketSession>> sessions = new ConcurrentHashMap<>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         String calendarId = extractCalendarId(session);
-        sessions.put(calendarId, session);
-        log.info("WebSocket connection established for calendar: {}", calendarId);
+        sessions.computeIfAbsent(calendarId, k -> ConcurrentHashMap.newKeySet()).add(session);
+        log.info("WebSocket {} connection established for calendar: {}, total sessions: {}",
+                session, calendarId, sessions.get(calendarId).size());
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
-        // 메시지 처리 로직
         log.debug("Received message: {}", message.getPayload());
     }
 
-    public void notifyCalendarUpdate(String calendarId, CalendarEventResponse eventResponse) {
-        WebSocketSession session = sessions.get(calendarId);
-        if (session != null && session.isOpen()) {
+    public <T> void notifyCalendarUpdate(WebSocketMessage<T> message) {
+        Set<WebSocketSession> calendarSessions = sessions.get(message.calendarId());
+        if (calendarSessions != null && !calendarSessions.isEmpty()) {
+            String messageString;
             try {
-                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(eventResponse)));
-                log.debug("Calendar update notification sent for calendar: {}", calendarId);
+                messageString = objectMapper.writeValueAsString(message);
             } catch (IOException e) {
-                log.error("Failed to send message for calendar: {}", calendarId, e);
+                log.error("Failed to serialize message", e);
+                return;
             }
+
+            calendarSessions.removeIf(session -> {
+                if (session.isOpen()) {
+                    try {
+                        session.sendMessage(new TextMessage(messageString));
+                        return false; // 세션 유지
+                    } catch (IOException e) {
+                        log.error("Failed to send message to session: {}", session.getId(), e);
+                    }
+                }
+                return true; // 세션 제거
+            });
+
+            log.debug("Calendar update notification sent for calendar: {}, type: {}, to {} sessions",
+                    message.calendarId(), message.type(), calendarSessions.size());
+        } else {
+            log.warn("No active sessions found for calendar: {}", message.calendarId());
         }
     }
 
@@ -59,7 +78,14 @@ public class CalendarWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         String calendarId = extractCalendarId(session);
-        sessions.remove(calendarId);
-        log.info("WebSocket connection closed for calendar: {}", calendarId);
+        Set<WebSocketSession> calendarSessions = sessions.get(calendarId);
+        if (calendarSessions != null) {
+            calendarSessions.remove(session);
+            if (calendarSessions.isEmpty()) {
+                sessions.remove(calendarId);
+            }
+            log.info("WebSocket connection closed for calendar: {}, remaining sessions: {}",
+                    calendarId, calendarSessions.size());
+        }
     }
 }

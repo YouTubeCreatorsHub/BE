@@ -1,6 +1,7 @@
 package com.creatorhub.platform.calendar.adapter.in.websocket;
 
 import com.creatorhub.platform.calendar.adapter.in.web.dto.CalendarEventResponse;
+import com.creatorhub.platform.calendar.adapter.in.websocket.dto.WebSocketMessage;
 import com.creatorhub.platform.calendar.domain.vo.EventStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,14 +20,12 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CalendarWebSocketHandlerTest {
-
     @Mock
     private WebSocketSession session;
 
@@ -45,7 +44,6 @@ class CalendarWebSocketHandlerTest {
     @Nested
     @DisplayName("WebSocket 연결 테스트")
     class ConnectionTest {
-
         @Test
         @DisplayName("웹소켓 연결이 성공적으로 수립된다")
         void connectionEstablished() throws Exception {
@@ -77,10 +75,9 @@ class CalendarWebSocketHandlerTest {
     @Nested
     @DisplayName("메시지 전송 테스트")
     class MessageTest {
-
         @Test
-        @DisplayName("캘린더 업데이트 알림이 성공적으로 전송된다")
-        void notifyCalendarUpdate() throws IOException {
+        @DisplayName("캘린더 이벤트 생성 알림이 성공적으로 전송된다")
+        void notifyCalendarEventCreated() throws IOException {
             // Given
             given(session.getUri()).willReturn(URI.create("/ws/calendar/" + calendarId));
             webSocketHandler.afterConnectionEstablished(session);
@@ -94,12 +91,18 @@ class CalendarWebSocketHandlerTest {
                     EventStatus.SCHEDULED
             );
 
-            String jsonMessage = "{\"test\":\"message\"}";
-            given(objectMapper.writeValueAsString(eventResponse)).willReturn(jsonMessage);
+            WebSocketMessage<CalendarEventResponse> message = WebSocketMessage.of(
+                    "CALENDAR_EVENT_CREATED",
+                    calendarId,
+                    eventResponse
+            );
+
+            String jsonMessage = "{\"type\":\"CALENDAR_EVENT_CREATED\",\"calendarId\":\"" + calendarId + "\",\"data\":{}}";
+            given(objectMapper.writeValueAsString(message)).willReturn(jsonMessage);
             given(session.isOpen()).willReturn(true);
 
             // When
-            webSocketHandler.notifyCalendarUpdate(calendarId, eventResponse);
+            webSocketHandler.notifyCalendarUpdate(message);
 
             // Then
             verify(session).sendMessage(any(TextMessage.class));
@@ -113,10 +116,14 @@ class CalendarWebSocketHandlerTest {
             webSocketHandler.afterConnectionEstablished(session);
             given(session.isOpen()).willReturn(false);
 
-            CalendarEventResponse eventResponse = mock(CalendarEventResponse.class);
+            WebSocketMessage<CalendarEventResponse> message = WebSocketMessage.of(
+                    "CALENDAR_EVENT_CREATED",
+                    calendarId,
+                    mock(CalendarEventResponse.class)
+            );
 
             // When
-            webSocketHandler.notifyCalendarUpdate(calendarId, eventResponse);
+            webSocketHandler.notifyCalendarUpdate(message);
 
             // Then
             verify(session, never()).sendMessage(any(TextMessage.class));
@@ -126,7 +133,6 @@ class CalendarWebSocketHandlerTest {
     @Nested
     @DisplayName("연결 종료 테스트")
     class DisconnectionTest {
-
         @Test
         @DisplayName("웹소켓 연결이 정상적으로 종료된다")
         void connectionClosed() throws Exception {
@@ -138,9 +144,12 @@ class CalendarWebSocketHandlerTest {
             webSocketHandler.afterConnectionClosed(session, CloseStatus.NORMAL);
 
             // Then
-            // 이후 메시지 전송 시도시 전송되지 않아야 함
-            CalendarEventResponse eventResponse = mock(CalendarEventResponse.class);
-            webSocketHandler.notifyCalendarUpdate(calendarId, eventResponse);
+            WebSocketMessage<CalendarEventResponse> message = WebSocketMessage.of(
+                    "CALENDAR_EVENT_CREATED",
+                    calendarId,
+                    mock(CalendarEventResponse.class)
+            );
+            webSocketHandler.notifyCalendarUpdate(message);
             verify(session, never()).sendMessage(any(TextMessage.class));
         }
     }
@@ -148,7 +157,6 @@ class CalendarWebSocketHandlerTest {
     @Nested
     @DisplayName("메시지 수신 테스트")
     class MessageReceiveTest {
-
         @Test
         @DisplayName("텍스트 메시지가 정상적으로 수신된다")
         void handleTextMessage() throws Exception {
@@ -159,8 +167,7 @@ class CalendarWebSocketHandlerTest {
             webSocketHandler.handleTextMessage(session, message);
 
             // Then
-            // 로그 확인이나 추가적인 메시지 처리 검증
-            verify(session, never()).sendMessage(any(TextMessage.class)); // 현재는 응답을 보내지 않음
+            verify(session, never()).sendMessage(any(TextMessage.class));
         }
     }
 }

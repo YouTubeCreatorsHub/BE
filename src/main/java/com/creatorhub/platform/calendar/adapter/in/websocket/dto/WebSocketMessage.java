@@ -1,13 +1,14 @@
 package com.creatorhub.platform.calendar.adapter.in.websocket.dto;
 
-import com.creatorhub.platform.calendar.adapter.in.web.dto.CalendarEventResponse;
-
-public record WebSocketMessage(
+public record WebSocketMessage<T>(
         String type,
         String calendarId,
-        CalendarEventResponse data
+        T data
 ) {
-    public static WebSocketMessage of(String type, String calendarId, CalendarEventResponse data) {
-        return new WebSocketMessage(type, calendarId, data);
-    }
+    public static <T> WebSocketMessage<T> of(String type, String calendarId, T data) {
+        String uuid = calendarId.contains("CalendarId(value=")
+                ? calendarId.replace("CalendarId(value=", "").replace(")", "")
+                : calendarId;
+
+        return new WebSocketMessage<>(type, uuid, data);    }
 }

@@ -48,7 +48,9 @@ public class CalendarController {
                 new CalendarTitle(request.title())
         );
         Calendar calendar = calendarService.cerateCalendar(command, UserId.of(userId));
-        return ResponseEntity.ok(CalendarResponse.from(calendar));
+        CalendarResponse response = CalendarResponse.from(calendar);
+
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{calendarId}")
@@ -59,7 +61,9 @@ public class CalendarController {
     ) {
         UpdateCalendarCommand command = new UpdateCalendarCommand(calendarId, new CalendarTitle(newTitle));
         Calendar calendar = calendarService.updateCalendar(command, UserId.of(userId));
-        return ResponseEntity.ok(CalendarResponse.from(calendar));
+        CalendarResponse response = CalendarResponse.from(calendar);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{calendarId}")
@@ -69,6 +73,7 @@ public class CalendarController {
     ) {
         DeleteCalendarCommand command = new DeleteCalendarCommand(calendarId);
         calendarService.deleteCalendar(command, UserId.of(userId));
+
         return ResponseEntity.ok().build();
     }
 
@@ -109,7 +114,9 @@ public class CalendarController {
                 new DateTimeRange(request.startTime(), request.endTime())
         );
         CalendarEvent event = calendarService.createEvent(command, UserId.of(userId));
-        return ResponseEntity.ok(CalendarEventResponse.from(event));
+        CalendarEventResponse response = CalendarEventResponse.from(event);
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{calendarId}/events/{eventId}")
@@ -126,7 +133,9 @@ public class CalendarController {
                 new DateTimeRange(request.startTime(), request.endTime())
         );
         CalendarEvent event = calendarService.updateEvent(command, UserId.of(userId));
-        return ResponseEntity.ok(CalendarEventResponse.from(event));
+        CalendarEventResponse response = CalendarEventResponse.from(event);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{calendarId}/events/{eventId}")
@@ -136,6 +145,7 @@ public class CalendarController {
             @RequestHeader("X-User-Id") String userId) {
         DeleteCalendarEventCommand command = new DeleteCalendarEventCommand(calendarId, eventId);
         calendarService.deleteEvent(command, UserId.of(userId));
+
         return ResponseEntity.ok().build();
     }
 }
