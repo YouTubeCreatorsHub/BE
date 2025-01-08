@@ -12,6 +12,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,11 +68,12 @@ public class CalendarWebSocketHandler extends TextWebSocketHandler {
     }
 
     private String extractCalendarId(WebSocketSession session) {
-        if (session.getUri() == null) {
+        URI uri = session.getUri();
+        if (uri == null) {
             throw new IllegalArgumentException("WebSocket URI cannot be null");
         }
 
-        String path = session.getUri().getPath();
+        String path = uri.getPath();
 
         // URI 패턴이 "/ws/calendar/{calendarId}"라고 가정
         String[] pathParts = path.split("/");
